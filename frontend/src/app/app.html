@@ -1,0 +1,60 @@
+@if (isManagerRoute()) {
+  <!-- Dedicated Staff/Manager Console Header -->
+  <header class="manager-top-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <a routerLink="/manager/dashboard" class="brand-link">
+          <span class="brand-title">ROCK</span>
+          <span class="manager-badge">STAFF CONSOLE</span>
+        </a>
+      </div>
+
+      <div class="manager-header-actions">
+        @if (authService.isAuthenticated()) {
+          <a routerLink="/" class="btn-shop-preview" title="View Public Storefront">
+            ↗ VIEW PUBLIC SHOP
+          </a>
+          <button class="btn-manager-logout" (click)="logoutManager()" title="Sign out of Console">
+            LOGOUT
+          </button>
+        } @else {
+          <a routerLink="/" class="btn-shop-preview">
+            ← RETURN TO SHOP
+          </a>
+        }
+      </div>
+    </div>
+  </header>
+} @else {
+  <!-- Public Customer Storefront Header -->
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <a routerLink="/" class="brand-link">
+          <span class="brand-title">ROCK</span>
+        </a>
+      </div>
+
+      <nav class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
+          SHOP
+        </a>
+        <a routerLink="/favorites" routerLinkActive="active" class="nav-item">
+          SAVED
+          @if (favoritesService.count() > 0) {
+            <span class="counter-badge">{{ favoritesService.count() }}</span>
+          }
+        </a>
+        <a routerLink="/cart" routerLinkActive="active" class="nav-item nav-cart">
+          BAG
+          <span class="counter-badge">{{ cartService.count() }}</span>
+          <span class="nav-total">${{ cartService.total().toFixed(2) }}</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+}
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,142 @@
+<div class="board-container">
+  @if (completedOrder(); as ord) {
+    <!-- Order Confirmation Receipt Screen -->
+    <div class="confirmation-container">
+      <div class="confirmation-badge">✓ ORDER RECEIVED</div>
+      <h1 class="confirmation-title">THANK YOU, {{ ord.userDetails.name.toUpperCase() }}</h1>
+      <p class="confirmation-subtitle">
+        Your order reference is <strong>#{{ ord._id }}</strong>. A ROCK client specialist will contact you directly at <strong>{{ ord.userDetails.phone }}</strong> to confirm sizing and coordinate delivery.
+      </p>
+
+      <div class="confirmation-grid">
+        <div class="receipt-card">
+          <h4 class="card-label">DELIVERY DESTINATION</h4>
+          <p class="data-val"><strong>{{ ord.userDetails.name }}</strong></p>
+          <p class="data-val">{{ ord.userDetails.phone }}</p>
+          <p class="data-val">{{ ord.userDetails.address }}</p>
+        </div>
+
+        <div class="receipt-card">
+          <h4 class="card-label">ORDER SUMMARY</h4>
+          <div class="receipt-items-list">
+            @for (item of ord.items; track item.itemId) {
+              <div class="receipt-item-row">
+                <span>{{ item.name }} (×{{ item.quantity }})</span>
+                <span class="price-tag">${{ item.subtotal.toFixed(2) }}</span>
+              </div>
+            }
+          </div>
+          <div class="receipt-total-row">
+            <span>TOTAL DUE ON DELIVERY</span>
+            <span class="price-tag total-val">${{ ord.totalPrice.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="confirmation-actions">
+        <a routerLink="/" class="btn btn-primary">RETURN TO SHOP</a>
+      </div>
+    </div>
+  } @else {
+    <!-- Checkout Form Screen -->
+    <div class="checkout-wrapper">
+      <div class="checkout-header">
+        <h1>EXPRESS CHECKOUT</h1>
+        <p>Complete your contact and delivery information to reserve your pieces.</p>
+      </div>
+
+      <div class="checkout-grid">
+        <!-- Form Column -->
+        <div class="form-container-card">
+          @if (errorMessage(); as msg) {
+            <div class="alert-error">
+              <div>{{ msg }}</div>
+              @if (msg.includes('not found') || msg.includes('Invalid item')) {
+                <div style="margin-top: 10px;">
+                  <button type="button" class="btn btn-sm" (click)="resetOutdatedBag()">
+                    CLEAR OUTDATED BAG & RETURN TO SHOP
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          <form (ngSubmit)="submitOrder()">
+            <div class="form-group">
+              <label for="name">RECIPIENT NAME *</label>
+              <input 
+                id="name" 
+                type="text" 
+                class="form-control" 
+                placeholder="Full name"
+                [(ngModel)]="name" 
+                name="name" 
+                required />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">TELEPHONE NUMBER (FOR DISPATCH CONFIRMATION) *</label>
+              <input 
+                id="phone" 
+                type="tel" 
+                class="form-control" 
+                placeholder="e.g. +1 (555) 000-0000"
+                [(ngModel)]="phone" 
+                name="phone" 
+                required />
+              <small class="field-hint">Our client specialist will reach out by phone to verify your order before dispatch.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="address">DELIVERY ADDRESS *</label>
+              <textarea 
+                id="address" 
+                class="form-control" 
+                rows="3" 
+                placeholder="Street address, building/apt, city, zip code"
+                [(ngModel)]="address" 
+                name="address" 
+                required></textarea>
+            </div>
+
+            <div class="fulfillment-assurance-box">
+              <div class="assurance-title">✦ CONCIERGE PHONE CONFIRMATION</div>
+              <p>No upfront online payment required. Sizing and delivery scheduling are confirmed via telephone. Payment is settled at delivery handover.</p>
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn btn-primary btn-lg btn-block"
+              [disabled]="submitting() || cartService.items().length === 0">
+              {{ submitting() ? 'CONFIRMING RESERVATION...' : 'COMPLETE ORDER • $' + cartService.total().toFixed(2) }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Sidebar Summary -->
+        <div class="aside-summary-card">
+          <h3 class="aside-heading">YOUR SELECTION ({{ cartService.count() }})</h3>
+
+          <div class="aside-items">
+            @for (entry of cartService.items(); track entry.item._id) {
+              <div class="aside-item">
+                <div class="aside-info">
+                  <span class="aside-name">{{ entry.item.name }}</span>
+                  <span class="aside-qty">Qty: {{ entry.quantity }} × ${{ entry.item.price.toFixed(2) }}</span>
+                </div>
+                <span class="price-tag">${{ (entry.item.price * entry.quantity).toFixed(2) }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="aside-total">
+            <span>TOTAL ESTIMATE</span>
+            <span class="price-tag total-val">${{ cartService.total().toFixed(2) }}</span>
+          </div>
+
+          <a routerLink="/cart" class="btn btn-sm btn-block" style="margin-top: 16px;">EDIT BAG</a>
+        </div>
+      </div>
+    </div>
+  }
+</div>

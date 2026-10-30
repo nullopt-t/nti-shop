@@ -1,0 +1,68 @@
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 280px);
+  padding: 40px 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+  .login-header {
+    margin-bottom: 24px;
+    text-align: center;
+
+    .portal-badge {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border-medium);
+      padding: 3px 8px;
+      border-radius: var(--radius-xs);
+      margin-bottom: 12px;
+    }
+
+    .login-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .login-instruction {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+  }
+
+  .alert-error {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #dc2626;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-xs);
+    text-align: center;
+  }
+
+  .btn-login {
+    padding: 12px;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+}

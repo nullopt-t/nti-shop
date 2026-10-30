@@ -1,0 +1,80 @@
+<div class="board-container">
+  <!-- Collection Filter Dropdown -->
+  <div class="collection-filter-wrapper">
+    <div class="filter-headline">
+      <h2>COLLECTIONS</h2>
+      
+      <div class="filter-dropdown-group">
+        <label for="categoryFilter" class="dropdown-label">CATEGORY</label>
+        <div class="select-wrapper">
+          <select 
+            id="categoryFilter"
+            class="category-select"
+            (change)="onCategoryDropdownChange($event)">
+            <option value="">ALL COLLECTIONS</option>
+            @for (cat of categories(); track cat) {
+              <option [value]="cat" [selected]="selectedCategory() === cat">
+                {{ cat }}
+              </option>
+            }
+          </select>
+          <span class="select-arrow">▼</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Catalog Grid -->
+  @if (loading()) {
+    <div class="state-container">
+      <div class="spinner"></div>
+      <p>LOADING COLLECTION...</p>
+    </div>
+  } @else if (error()) {
+    <div class="state-container error">
+      <p>{{ error() }}</p>
+      <button class="btn btn-sm btn-primary" (click)="loadItems()">RELOAD</button>
+    </div>
+  } @else if (items().length === 0) {
+    <div class="state-container">
+      <p>No products currently available in this category.</p>
+    </div>
+  } @else {
+    <div class="product-grid">
+      @for (item of items(); track item._id) {
+        <div class="product-card" [routerLink]="['/items', item._id]">
+          <div class="media-wrapper">
+            @if (item.image) {
+              <img [src]="item.image" [alt]="item.name" class="product-img" loading="lazy" />
+            } @else {
+              <div class="no-img-card-fallback">
+                <span class="no-img-alt">{{ item.name }}</span>
+              </div>
+            }
+            <button 
+              class="btn-favorite"
+              [class.is-fav]="favoritesService.isFavorite(item._id)"
+              (click)="onToggleFavorite(item, $event)"
+              title="Save to favorites">
+              ★
+            </button>
+            <div class="quick-add-bar">
+              <button class="btn-quick-add" (click)="onAddToCart(item, $event)">
+                QUICK ADD +
+              </button>
+            </div>
+          </div>
+
+          <div class="product-details">
+            <div class="product-meta">
+              <span class="product-category">{{ item.category }}</span>
+              <span class="product-price">${{ item.price.toFixed(2) }}</span>
+            </div>
+            <h3 class="product-title">{{ item.name }}</h3>
+            <p class="product-description">{{ item.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

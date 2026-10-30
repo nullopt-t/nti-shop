@@ -1,0 +1,37 @@
+<div class="board-container login-wrapper">
+  <div class="login-card">
+    <div class="login-header">
+      <span class="portal-badge">STAFF CONSOLE</span>
+      <h2 class="login-title">ADMINISTRATIVE ACCESS</h2>
+      <p class="login-instruction">
+        Please authenticate with your administrative security key to manage inventory, catalog styles, and client orders.
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-error">{{ errorMessage() }}</div>
+    }
+
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <label for="accessKey">SECURITY KEY</label>
+        <input 
+          id="accessKey"
+          type="password"
+          class="form-control"
+          placeholder="••••••••••••"
+          [(ngModel)]="accessKey"
+          name="accessKey"
+          autofocus
+          required />
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block btn-login"
+        [disabled]="loading()">
+        {{ loading() ? 'AUTHENTICATING...' : 'ACCESS CONSOLE →' }}
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="board-container">
+  <div class="wishlist-header">
+    <h1 class="wishlist-title">SAVED PIECES</h1>
+    <span class="wishlist-count">{{ favoritesService.count() }} {{ favoritesService.count() === 1 ? 'ITEM' : 'ITEMS' }}</span>
+  </div>
+
+  @if (favoritesService.favorites().length === 0) {
+    <div class="empty-state-card">
+      <p>Your saved wishlist is currently empty.</p>
+      <a routerLink="/" class="btn btn-primary">EXPLORE THE COLLECTION</a>
+    </div>
+  } @else {
+    <div class="board-panel">
+      <table class="board-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ITEM</th>
+            <th>DESCRIPTION</th>
+            <th style="width: 120px;">PRICE</th>
+            <th style="width: 200px; text-align: right;">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of favoritesService.favorites(); track item._id) {
+            <tr>
+              <td>
+                @if (item.image) {
+                  <img [src]="item.image" [alt]="item.name" class="wishlist-thumb" />
+                } @else {
+                  <div class="wishlist-thumb thumb-placeholder">
+                    <span>{{ item.name }}</span>
+                  </div>
+                }
+              </td>
+              <td>
+                <a [routerLink]="['/items', item._id]" class="wishlist-name">
+                  {{ item.name }}
+                </a>
+                <p class="wishlist-desc">{{ item.description }}</p>
+              </td>
+              <td class="price-tag">${{ item.price.toFixed(2) }}</td>
+              <td style="text-align: right;">
+                <button class="btn btn-sm btn-primary" (click)="addToCart(item)" style="margin-right: 8px;">
+                  + ADD TO BAG
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="remove(item._id)" title="Remove">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

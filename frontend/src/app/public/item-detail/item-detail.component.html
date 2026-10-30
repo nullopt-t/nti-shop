@@ -1,0 +1,86 @@
+<div class="board-container">
+  <div class="nav-breadcrumbs">
+    <a routerLink="/" class="back-link">← BACK TO COLLECTION</a>
+  </div>
+
+  @if (loading()) {
+    <div class="state-container">
+      <div class="spinner"></div>
+      <p>FETCHING PRODUCT SPECIFICATIONS...</p>
+    </div>
+  } @else if (error()) {
+    <div class="state-container error">
+      <p>{{ error() }}</p>
+      <a routerLink="/" class="btn btn-primary btn-sm">RETURN TO SHOP</a>
+    </div>
+  } @else if (item(); as itm) {
+    <div class="detail-grid">
+      <!-- Media Column -->
+      <div class="product-gallery">
+        <div class="main-image-frame">
+          @if (itm.image) {
+            <img [src]="itm.image" [alt]="itm.name" class="detail-img" />
+          } @else {
+            <div class="no-img-detail-fallback">
+              <span class="no-img-alt">{{ itm.name }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Purchasing Column -->
+      <div class="product-meta-column">
+        <div class="product-header">
+          <span class="category-badge">{{ itm.category }}</span>
+          <h1 class="product-heading">{{ itm.name }}</h1>
+          <div class="price-display">${{ itm.price.toFixed(2) }}</div>
+        </div>
+
+        <div class="product-editorial">
+          <h4 class="editorial-title">ABOUT THIS PIECE</h4>
+          <p class="editorial-text">{{ itm.description }}</p>
+        </div>
+
+        <div class="purchase-controls">
+          <div class="quantity-block">
+            <span class="control-label">QUANTITY</span>
+            <div class="quantity-stepper">
+              <button type="button" class="stepper-btn" (click)="decreaseQty()">−</button>
+              <span class="stepper-value">{{ quantity() }}</span>
+              <button type="button" class="stepper-btn" (click)="increaseQty()">+</button>
+            </div>
+          </div>
+
+          <div class="cta-stack">
+            <button class="btn btn-primary btn-lg btn-block" (click)="addToCart()">
+              ADD TO BAG • ${{ (itm.price * quantity()).toFixed(2) }}
+            </button>
+
+            <button 
+              class="btn btn-outline btn-block"
+              [class.is-fav]="favoritesService.isFavorite(itm._id)"
+              (click)="toggleFavorite()">
+              {{ favoritesService.isFavorite(itm._id) ? '★ SAVED IN WISHLIST' : '☆ SAVE TO WISHLIST' }}
+            </button>
+          </div>
+
+          @if (addedNotification()) {
+            <div class="feedback-toast">
+              ✓ Added {{ quantity() }} item(s) to your bag.
+            </div>
+          }
+
+          <div class="concierge-card">
+            <div class="concierge-header">
+              <span class="icon">✦</span>
+              <span class="title">CONCIERGE DELIVERY & FIT CHECK</span>
+            </div>
+            <p class="concierge-desc">
+              All orders are confirmed directly via telephone prior to courier dispatch. Our team verifies exact measurements and coordinates delivery at your convenience.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

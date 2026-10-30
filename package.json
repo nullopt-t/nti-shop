@@ -1,0 +1,15 @@
+{
+  "name": "rock-store",
+  "version": "1.0.0",
+  "description": "ROCK Clothing Store - Fullstack Application",
+  "private": true,
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "node -e \"const { spawn } = require('child_process'); const b = spawn('npm', ['start', '--prefix', 'backend'], { stdio: 'inherit' }); const f = spawn('npm', ['start', '--prefix', 'frontend'], { stdio: 'inherit' }); const cleanup = () => { b.kill(); f.kill(); process.exit(); }; process.on('SIGINT', cleanup); process.on('SIGTERM', cleanup);\"",
+    "start:backend": "npm start --prefix backend",
+    "start:frontend": "npm start --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "test": "npm test --prefix backend && npm test --prefix frontend -- --watch=false",
+    "seed": "npm run seed --prefix backend"
+  }
+}

@@ -1,0 +1,198 @@
+.cart-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 16px;
+
+  .cart-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+  }
+
+  .bag-count {
+    font-family: var(--font-display);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+}
+
+.empty-bag-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 80px 20px;
+  text-align: center;
+
+  .empty-text {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+}
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  align-items: flex-start;
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cart-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-subtle);
+
+  &.thumb-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    font-family: var(--font-display);
+    font-size: 8.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 4px;
+    line-height: 1.1;
+    overflow: hidden;
+    word-break: break-word;
+  }
+}
+
+.cart-product-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+  display: block;
+}
+
+.cart-product-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.stepper-box {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-medium);
+  background: var(--bg-canvas);
+  border-radius: var(--radius-xs);
+
+  .s-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      color: var(--text-primary);
+      background: var(--bg-surface-elevated);
+    }
+  }
+
+  .s-val {
+    width: 32px;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--accent-rose);
+  }
+}
+
+.cart-actions-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.order-summary-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+
+  .summary-heading {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .summary-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+
+    .shipping-tag {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-emerald);
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .summary-total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 16px;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--text-primary);
+
+    .total-price {
+      font-size: 22px;
+    }
+  }
+
+  .summary-disclaimer {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 16px;
+    text-align: center;
+  }
+}

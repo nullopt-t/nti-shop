@@ -1,0 +1,108 @@
+<div class="board-container">
+  <div class="cart-header-row">
+    <h1 class="cart-title">SHOPPING BAG</h1>
+    <span class="bag-count">{{ cartService.count() }} {{ cartService.count() === 1 ? 'ITEM' : 'ITEMS' }}</span>
+  </div>
+
+  @if (cartService.items().length === 0) {
+    <div class="empty-bag-card">
+      <p class="empty-text">Your shopping bag is currently empty.</p>
+      <a routerLink="/" class="btn btn-primary">DISCOVER THE COLLECTION</a>
+    </div>
+  } @else {
+    <div class="cart-grid">
+      <!-- Items Table Column -->
+      <div class="cart-items-column">
+        <table class="board-table cart-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">ITEM</th>
+              <th>DESCRIPTION</th>
+              <th style="width: 110px;">PRICE</th>
+              <th style="width: 130px; text-align: center;">QUANTITY</th>
+              <th style="width: 110px; text-align: right;">TOTAL</th>
+              <th style="width: 60px; text-align: center;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of cartService.items(); track entry.item._id) {
+              <tr>
+                <td>
+                  @if (entry.item.image) {
+                    <img [src]="entry.item.image" [alt]="entry.item.name" class="cart-thumb" />
+                  } @else {
+                    <div class="cart-thumb thumb-placeholder">
+                      <span>{{ entry.item.name }}</span>
+                    </div>
+                  }
+                </td>
+                <td>
+                  <a [routerLink]="['/items', entry.item._id]" class="cart-product-title">
+                    {{ entry.item.name }}
+                  </a>
+                  <p class="cart-product-desc">{{ entry.item.description }}</p>
+                </td>
+                <td class="price-tag">${{ entry.item.price.toFixed(2) }}</td>
+                <td style="text-align: center;">
+                  <div class="stepper-box">
+                    <button class="s-btn" (click)="decrease(entry.item._id, entry.quantity)">−</button>
+                    <span class="s-val">{{ entry.quantity }}</span>
+                    <button class="s-btn" (click)="increase(entry.item._id, entry.quantity)">+</button>
+                  </div>
+                </td>
+                <td style="text-align: right;" class="price-tag">
+                  ${{ (entry.item.price * entry.quantity).toFixed(2) }}
+                </td>
+                <td style="text-align: center;">
+                  <button class="btn-remove" (click)="remove(entry.item._id)" title="Remove item">
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="cart-actions-row">
+          <button class="btn btn-sm" (click)="clear()">CLEAR BAG</button>
+          <a routerLink="/" class="btn btn-sm">CONTINUE SHOPPING</a>
+        </div>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div class="order-summary-card">
+        <h3 class="summary-heading">ORDER SUMMARY</h3>
+
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <span class="price-tag">${{ cartService.total().toFixed(2) }}</span>
+        </div>
+
+        <div class="summary-line">
+          <span>Courier Shipping</span>
+          <span class="shipping-tag">COMPLIMENTARY</span>
+        </div>
+
+        <div class="summary-line">
+          <span>Phone Verification</span>
+          <span class="shipping-tag">INCLUDED</span>
+        </div>
+
+        <div class="summary-total-line">
+          <span>TOTAL ESTIMATE</span>
+          <span class="total-price">${{ cartService.total().toFixed(2) }}</span>
+        </div>
+
+        <div class="summary-cta">
+          <a routerLink="/checkout" class="btn btn-primary btn-lg btn-block">
+            CONTINUE TO CHECKOUT →
+          </a>
+        </div>
+
+        <p class="summary-disclaimer">
+          Payment is collected upon delivery handover following telephone confirmation.
+        </p>
+      </div>
+    </div>
+  }
+</div>
