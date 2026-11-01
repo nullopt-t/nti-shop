@@ -1,19 +1,41 @@
 <div class="board-container">
-  @if (completedOrder(); as ord) {
+  @if (paymobReturnNotice(); as notice) {
+    <!-- Paymob Gateway Return Screen -->
+    <div class="confirmation-container">
+      <div class="confirmation-badge">✓ PAYMENT RECEIVED</div>
+      <h1 class="confirmation-title">TRANSACTION COMPLETED</h1>
+      <p class="confirmation-subtitle">
+        {{ notice }}
+      </p>
+      <div class="confirmation-actions">
+        <a routerLink="/" class="btn btn-primary">RETURN TO SHOP</a>
+      </div>
+    </div>
+  } @else if (completedOrder(); as ord) {
     <!-- Order Confirmation Receipt Screen -->
     <div class="confirmation-container">
       <div class="confirmation-badge">✓ ORDER RECEIVED</div>
       <h1 class="confirmation-title">THANK YOU, {{ ord.userDetails.name.toUpperCase() }}</h1>
       <p class="confirmation-subtitle">
-        Your order reference is <strong>#{{ ord._id }}</strong>. A ROCK client specialist will contact you directly at <strong>{{ ord.userDetails.phone }}</strong> to confirm sizing and coordinate delivery.
+        Your order reference is <strong>#{{ ord._id }}</strong>. 
+        @if (ord.paymentMethod === 'cod') {
+          A ROCK client specialist will contact you directly at <strong>{{ ord.userDetails.phone }}</strong> to confirm sizing and coordinate delivery.
+        } @else {
+          Your online payment has been submitted. Our team is processing your shipment.
+        }
       </p>
 
       <div class="confirmation-grid">
         <div class="receipt-card">
-          <h4 class="card-label">DELIVERY DESTINATION</h4>
+          <h4 class="card-label">DELIVERY / INQUIRY CONTACT</h4>
           <p class="data-val"><strong>{{ ord.userDetails.name }}</strong></p>
           <p class="data-val">{{ ord.userDetails.phone }}</p>
           <p class="data-val">{{ ord.userDetails.address }}</p>
+          <p class="data-val" style="margin-top: 8px;">
+            <span class="badge" [class.badge-paymob]="ord.paymentMethod === 'paymob'">
+              {{ ord.paymentMethod === 'paymob' ? 'PAYMOB GATEWAY' : 'CASH ON DELIVERY' }}
+            </span>
+          </p>
         </div>
 
         <div class="receipt-card">
@@ -27,7 +49,7 @@
             }
           </div>
           <div class="receipt-total-row">
-            <span>TOTAL DUE ON DELIVERY</span>
+            <span>{{ ord.paymentMethod === 'cod' ? 'TOTAL DUE ON DELIVERY' : 'TOTAL PAID' }}</span>
             <span class="price-tag total-val">${{ ord.totalPrice.toFixed(2) }}</span>
           </div>
         </div>
@@ -42,7 +64,7 @@
     <div class="checkout-wrapper">
       <div class="checkout-header">
         <h1>EXPRESS CHECKOUT</h1>
-        <p>Complete your contact and delivery information to reserve your pieces.</p>
+        <p>Choose your preferred payment method and finalize your pieces.</p>
       </div>
 
       <div class="checkout-grid">
@@ -61,54 +83,102 @@
             </div>
           }
 
+          <!-- Payment Method Selector -->
+          <div class="payment-selector-group">
+            <label class="selector-label">PAYMENT METHOD</label>
+            <div class="payment-tabs">
+              <button 
+                type="button" 
+                class="payment-option-btn" 
+                [class.active]="paymentMethod === 'cod'"
+                (click)="setPaymentMethod('cod')">
+                <span class="payment-icon">💵</span>
+                <span class="payment-name">Cash on Delivery</span>
+                <span class="payment-desc">Pay upon courier delivery</span>
+              </button>
+
+              <button 
+                type="button" 
+                class="payment-option-btn" 
+                [class.active]="paymentMethod === 'paymob'"
+                (click)="setPaymentMethod('paymob')">
+                <span class="payment-icon">💳</span>
+                <span class="payment-name">Paymob Gateway</span>
+                <span class="payment-desc">Credit/Debit Card & Wallets</span>
+              </button>
+            </div>
+          </div>
+
           <form (ngSubmit)="submitOrder()">
-            <div class="form-group">
-              <label for="name">RECIPIENT NAME *</label>
-              <input 
-                id="name" 
-                type="text" 
-                class="form-control" 
-                placeholder="Full name"
-                [(ngModel)]="name" 
-                name="name" 
-                required />
+            <!-- Contact info section -->
+            <div class="contact-section">
+              <div class="section-title">
+                {{ paymentMethod === 'cod' ? 'DELIVERY & VERIFICATION CONTACT' : 'CLIENT CONTACT (FALLBACK & INQUIRIES)' }}
+              </div>
+
+              <div class="form-group">
+                <label for="name">
+                  CLIENT NAME {{ paymentMethod === 'cod' ? '*' : '(OPTIONAL)' }}
+                </label>
+                <input 
+                  id="name" 
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Full name"
+                  [(ngModel)]="name" 
+                  name="name" 
+                  [required]="paymentMethod === 'cod'" />
+              </div>
+
+              <div class="form-group">
+                <label for="phone">
+                  TELEPHONE NUMBER {{ paymentMethod === 'cod' ? '*' : '(OPTIONAL)' }}
+                </label>
+                <input 
+                  id="phone" 
+                  type="tel" 
+                  class="form-control" 
+                  placeholder="e.g. +20 100 000 0000"
+                  [(ngModel)]="phone" 
+                  name="phone" 
+                  [required]="paymentMethod === 'cod'" />
+                <small class="field-hint">
+                  {{ paymentMethod === 'cod' ? 'Required: our team calls to verify sizing & dispatch.' : 'Used as fallback for support inquiries.' }}
+                </small>
+              </div>
+
+              @if (paymentMethod === 'cod') {
+                <div class="form-group">
+                  <label for="address">DELIVERY ADDRESS *</label>
+                  <textarea 
+                    id="address" 
+                    class="form-control" 
+                    rows="3" 
+                    placeholder="Street address, building/apt, city, zip code"
+                    [(ngModel)]="address" 
+                    name="address" 
+                    required></textarea>
+                </div>
+              }
             </div>
 
-            <div class="form-group">
-              <label for="phone">TELEPHONE NUMBER (FOR DISPATCH CONFIRMATION) *</label>
-              <input 
-                id="phone" 
-                type="tel" 
-                class="form-control" 
-                placeholder="e.g. +1 (555) 000-0000"
-                [(ngModel)]="phone" 
-                name="phone" 
-                required />
-              <small class="field-hint">Our client specialist will reach out by phone to verify your order before dispatch.</small>
-            </div>
-
-            <div class="form-group">
-              <label for="address">DELIVERY ADDRESS *</label>
-              <textarea 
-                id="address" 
-                class="form-control" 
-                rows="3" 
-                placeholder="Street address, building/apt, city, zip code"
-                [(ngModel)]="address" 
-                name="address" 
-                required></textarea>
-            </div>
-
-            <div class="fulfillment-assurance-box">
-              <div class="assurance-title">✦ CONCIERGE PHONE CONFIRMATION</div>
-              <p>No upfront online payment required. Sizing and delivery scheduling are confirmed via telephone. Payment is settled at delivery handover.</p>
-            </div>
+            @if (paymentMethod === 'cod') {
+              <div class="fulfillment-assurance-box">
+                <div class="assurance-title">✦ CONCIERGE PHONE CONFIRMATION</div>
+                <p>No upfront payment. Sizing and delivery scheduling are confirmed via telephone. Payment is settled at delivery handover.</p>
+              </div>
+            } @else {
+              <div class="fulfillment-assurance-box gateway-box">
+                <div class="assurance-title">✦ SECURE PAYMOB REDIRECT</div>
+                <p>You will be directed to Paymob's official payment page to securely enter card or wallet details. No card information is stored on our servers.</p>
+              </div>
+            }
 
             <button 
               type="submit" 
               class="btn btn-primary btn-lg btn-block"
               [disabled]="submitting() || cartService.items().length === 0">
-              {{ submitting() ? 'CONFIRMING RESERVATION...' : 'COMPLETE ORDER • $' + cartService.total().toFixed(2) }}
+              {{ submitting() ? 'PROCESSING...' : (paymentMethod === 'paymob' ? 'PROCEED TO PAYMOB • $' + cartService.total().toFixed(2) : 'CONFIRM ORDER • $' + cartService.total().toFixed(2)) }}
             </button>
           </form>
         </div>

@@ -76,6 +76,98 @@
   border-radius: var(--radius-xs);
 }
 
+.payment-selector-group {
+  margin-bottom: 24px;
+
+  .selector-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .payment-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .payment-option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+
+    .payment-icon {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .payment-name {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .payment-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    &:hover {
+      border-color: var(--text-muted);
+    }
+
+    &.active {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      outline: 2px solid var(--accent);
+    }
+  }
+}
+
+.contact-section {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 18px;
+  margin-bottom: 18px;
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+}
+
+.badge-paymob {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
 .aside-summary-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
