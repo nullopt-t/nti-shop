@@ -45,6 +45,13 @@ Build Sprint 01 of the clothes-shopping web application consisting of a Node.js/
 - [x] Manager flow: Enter passcode -> add/edit category -> add/edit item stock -> view order -> toggle opened/closed & update notes
 - [x] Quantity is never leaked to public browser network inspection
 
+### Phase 6: Paymob Gateway & Dual Payment Mode
+- [x] Task 10: Backend Paymob Service using latest Intentions API (`v1/intention`) with zero extra libraries
+- [x] Task 11: Backend Order Controller dual payment handling (`cod` vs `paymob`) and HMAC-SHA512 Webhook receiver
+- [x] Task 12: Frontend Checkout component payment method switch (COD with full details vs Paymob Gateway with fallback contact)
+- [x] Task 13: Manager Dashboard payment method and settlement status indicators
+
+
 ## Risks and Mitigations
 | Risk | Impact | Mitigation |
 |------|--------|------------|
