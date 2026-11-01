@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Item } from '../models/item.model';
-import { Order, CreateOrderPayload } from '../models/order.model';
+import { Order, CreateOrderPayload, CreateOrderResponse } from '../models/order.model';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -36,8 +36,8 @@ export class ApiService {
     return this.http.get<ApiResponse<Item>>(`${this.baseUrl}/items/${id}`);
   }
 
-  submitOrder(payload: CreateOrderPayload): Observable<ApiResponse<Order>> {
-    return this.http.post<ApiResponse<Order>>(`${this.baseUrl}/orders`, payload);
+  submitOrder(payload: CreateOrderPayload): Observable<CreateOrderResponse> {
+    return this.http.post<CreateOrderResponse>(`${this.baseUrl}/orders`, payload);
   }
 
   // --- MANAGER ENDPOINTS ---

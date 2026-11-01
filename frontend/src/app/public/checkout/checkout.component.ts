@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { CartService } from '../../core/services/cart.service';
-import { Order } from '../../core/models/order.model';
+import { Order, CreateOrderPayload } from '../../core/models/order.model';
 
 @Component({
   selector: 'app-checkout',
@@ -45,7 +45,8 @@ export class CheckoutComponent {
     this.submitting.set(true);
     this.errorMessage.set(null);
 
-    const payload = {
+    const payload: CreateOrderPayload = {
+      paymentMethod: 'cod',
       userDetails: {
         name: this.name.trim(),
         phone: this.phone.trim(),

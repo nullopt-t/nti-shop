@@ -12,11 +12,21 @@ export interface UserDetails {
   address: string;
 }
 
+export interface PaymobDetails {
+  intentionId?: string;
+  clientSecret?: string;
+  paymobOrderId?: string;
+  transactionId?: string;
+}
+
 export interface Order {
   _id: string;
   userDetails: UserDetails;
   items: OrderItemSnapshot[];
   totalPrice: number;
+  paymentMethod: 'cod' | 'paymob';
+  paymentStatus: 'pending' | 'paid' | 'failed';
+  paymobDetails?: PaymobDetails;
   status: 'opened' | 'closed';
   notes?: string;
   createdAt: string;
@@ -24,9 +34,18 @@ export interface Order {
 }
 
 export interface CreateOrderPayload {
-  userDetails: UserDetails;
+  paymentMethod: 'cod' | 'paymob';
+  userDetails: Partial<UserDetails>;
   items: {
     itemId: string;
     quantity: number;
   }[];
 }
+
+export interface CreateOrderResponse {
+  success: boolean;
+  message?: string;
+  data: Order;
+  checkoutUrl?: string;
+}
+
