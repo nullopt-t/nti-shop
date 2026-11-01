@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getPublicCategories } from '../controllers/categoryController.js';
 import { getPublicItems, getPublicItemById } from '../controllers/itemController.js';
-import { createPublicOrder } from '../controllers/orderController.js';
+import { createPublicOrder, handlePaymobWebhook } from '../controllers/orderController.js';
 
 const router = Router();
 
@@ -12,7 +12,8 @@ router.get('/categories', getPublicCategories);
 router.get('/items', getPublicItems);
 router.get('/items/:id', getPublicItemById);
 
-// Orders
+// Orders & Paymob Integration
 router.post('/orders', createPublicOrder);
+router.post('/paymob/webhook', handlePaymobWebhook);
 
 export default router;

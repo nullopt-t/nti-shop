@@ -91,9 +91,71 @@ describe('Public Storefront Endpoints', () => {
     const res = await request(app).post('/api/orders').send(payload);
     assert.strictEqual(res.status, 201);
     assert.strictEqual(res.body.success, true);
+    assert.strictEqual(res.body.data.paymentMethod, 'cod');
+    assert.strictEqual(res.body.data.paymentStatus, 'pending');
     assert.strictEqual(res.body.data.status, 'opened');
     assert.strictEqual(res.body.data.totalPrice, 79.99 * 2);
     assert.strictEqual(res.body.data.items[0].subtotal, 79.99 * 2);
+  });
+
+  test('POST /api/orders with paymentMethod=paymob initializes intention with fallback contact', async () => {
+    const payload = {
+      paymentMethod: 'paymob',
+      userDetails: {
+        name: 'Bob Online',
+        phone: '+20 100 123 4567',
+        // Address omitted to verify fallback
+      },
+      items: [
+        {
+          itemId: testItem._id.toString(),
+          quantity: 1,
+        },
+      ],
+    };
+
+    const res = await request(app).post('/api/orders').send(payload);
+    assert.strictEqual(res.status, 201);
+    assert.strictEqual(res.body.success, true);
+    assert.strictEqual(res.body.data.paymentMethod, 'paymob');
+    assert.strictEqual(res.body.data.paymentStatus, 'pending');
+    assert.ok(res.body.checkoutUrl);
+    assert.ok(res.body.checkoutUrl.includes('unifiedcheckout'));
+    assert.strictEqual(res.body.data.userDetails.name, 'Bob Online');
+    assert.strictEqual(res.body.data.userDetails.address, 'N/A');
+  });
+
+  test('POST /api/paymob/webhook updates order status to paid on successful transaction', async () => {
+    // Create an order first
+    const order = await Order.create({
+      userDetails: { name: 'Card Buyer', phone: '+20100', address: 'Cairo' },
+      items: [{ itemId: testItem._id, name: testItem.name, price: testItem.price, quantity: 1, subtotal: testItem.price }],
+      totalPrice: testItem.price,
+      paymentMethod: 'paymob',
+      paymentStatus: 'pending',
+      status: 'opened',
+    });
+
+    const webhookPayload = {
+      type: 'TRANSACTION',
+      obj: {
+        id: 998877,
+        success: true,
+        special_reference: order._id.toString(),
+        amount_cents: Math.round(testItem.price * 100),
+      },
+    };
+
+    const res = await request(app)
+      .post('/api/paymob/webhook')
+      .send(webhookPayload);
+
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.success, true);
+
+    const updated = await Order.findById(order._id);
+    assert.strictEqual(updated.paymentStatus, 'paid');
+    assert.strictEqual(updated.paymobDetails.transactionId, '998877');
   });
 });
 
