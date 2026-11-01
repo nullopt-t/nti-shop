@@ -36,19 +36,37 @@ const orderSchema = new mongoose.Schema(
     userDetails: {
       name: {
         type: String,
-        required: [true, 'Customer name is required'],
+        default: 'Guest Customer',
         trim: true,
       },
       phone: {
         type: String,
-        required: [true, 'Phone number is required for order confirmation'],
+        default: 'N/A',
         trim: true,
       },
       address: {
         type: String,
-        required: [true, 'Delivery address is required'],
+        default: 'N/A',
         trim: true,
       },
+    },
+    paymentMethod: {
+      type: String,
+      enum: ['cod', 'paymob'],
+      default: 'cod',
+      index: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'paid', 'failed'],
+      default: 'pending',
+      index: true,
+    },
+    paymobDetails: {
+      intentionId: { type: String, default: null },
+      clientSecret: { type: String, default: null },
+      paymobOrderId: { type: String, default: null },
+      transactionId: { type: String, default: null },
     },
     items: {
       type: [orderItemSnapshotSchema],
