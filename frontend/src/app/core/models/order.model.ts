@@ -10,6 +10,7 @@ export interface UserDetails {
   name: string;
   phone: string;
   address: string;
+  email?: string;
 }
 
 export interface PaymobDetails {
@@ -19,14 +20,23 @@ export interface PaymobDetails {
   transactionId?: string;
 }
 
+export interface StripeDetails {
+  sessionId?: string;
+  paymentIntentId?: string;
+  customerEmail?: string;
+}
+
+export type PaymentMethodType = 'cod' | 'paymob' | 'stripe';
+
 export interface Order {
   _id: string;
   userDetails: UserDetails;
   items: OrderItemSnapshot[];
   totalPrice: number;
-  paymentMethod: 'cod' | 'paymob';
+  paymentMethod: PaymentMethodType;
   paymentStatus: 'pending' | 'paid' | 'failed';
   paymobDetails?: PaymobDetails;
+  stripeDetails?: StripeDetails;
   status: 'opened' | 'closed';
   notes?: string;
   createdAt: string;
@@ -34,7 +44,7 @@ export interface Order {
 }
 
 export interface CreateOrderPayload {
-  paymentMethod: 'cod' | 'paymob';
+  paymentMethod: PaymentMethodType;
   userDetails: Partial<UserDetails>;
   items: {
     itemId: string;
@@ -48,4 +58,3 @@ export interface CreateOrderResponse {
   data: Order;
   checkoutUrl?: string;
 }
-

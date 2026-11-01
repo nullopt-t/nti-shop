@@ -6,7 +6,13 @@ import app from '../src/app.js';
 import { Item } from '../src/models/Item.js';
 import { Order } from '../src/models/Order.js';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/nti_clothing_shop_test';
+process.env.PAYMOB_HMAC_SECRET = '';
+process.env.PAYMOB_SECRET_KEY = '';
+process.env.STRIPE_WEBHOOK_SECRET = '';
+process.env.ENABLE_PAYMOB = 'true';
+process.env.ENABLE_STRIPE = 'true';
+
+const MONGODB_URI = process.env.TEST_MONGODB_URI || 'mongodb://127.0.0.1:27017/nti_clothing_shop_test';
 let managerToken = '';
 let testItem = null;
 
@@ -156,6 +162,94 @@ describe('Public Storefront Endpoints', () => {
     const updated = await Order.findById(order._id);
     assert.strictEqual(updated.paymentStatus, 'paid');
     assert.strictEqual(updated.paymobDetails.transactionId, '998877');
+  });
+
+  test('GET /api/payment-methods returns configured payment methods', async () => {
+    const res = await request(app).get('/api/payment-methods');
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.success, true);
+    assert.ok(Array.isArray(res.body.data));
+    assert.ok(res.body.data.includes('cod'));
+    assert.ok(res.body.data.includes('stripe'));
+  });
+
+  test('POST /api/orders with paymentMethod=stripe initializes checkout session', async () => {
+    const payload = {
+      paymentMethod: 'stripe',
+      userDetails: {
+        name: 'Stripe Customer',
+        phone: '+1 555 123 4567',
+        email: 'stripe.user@example.com',
+      },
+      items: [
+        {
+          itemId: testItem._id.toString(),
+          quantity: 2,
+        },
+      ],
+    };
+
+    const res = await request(app).post('/api/orders').send(payload);
+    assert.strictEqual(res.status, 201);
+    assert.strictEqual(res.body.success, true);
+    assert.strictEqual(res.body.data.paymentMethod, 'stripe');
+    assert.strictEqual(res.body.data.paymentStatus, 'pending');
+    assert.ok(res.body.checkoutUrl);
+    assert.ok(res.body.checkoutUrl.includes('session_id=') || res.body.checkoutUrl.includes('stripe.com'));
+    assert.ok(res.body.data.stripeDetails.sessionId);
+  });
+
+  test('GET /api/orders/:id/status with session_id verifies payment directly without tunnel', async () => {
+    const order = await Order.create({
+      userDetails: { name: 'Direct Verifier', phone: '+1 234', address: 'Online' },
+      items: [{ itemId: testItem._id, name: testItem.name, price: testItem.price, quantity: 1, subtotal: testItem.price }],
+      totalPrice: testItem.price,
+      paymentMethod: 'stripe',
+      paymentStatus: 'pending',
+      status: 'opened',
+      stripeDetails: { sessionId: 'cs_test_mock_123' },
+    });
+
+    const res = await request(app).get(`/api/orders/${order._id}/status?session_id=cs_test_mock_123`);
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.success, true);
+    assert.strictEqual(res.body.data.paymentStatus, 'paid');
+
+    const updated = await Order.findById(order._id);
+    assert.strictEqual(updated.paymentStatus, 'paid');
+  });
+
+  test('POST /api/stripe/webhook updates order status to paid on checkout.session.completed', async () => {
+    const order = await Order.create({
+      userDetails: { name: 'Webhook Buyer', phone: '+1 456', address: 'Online' },
+      items: [{ itemId: testItem._id, name: testItem.name, price: testItem.price, quantity: 1, subtotal: testItem.price }],
+      totalPrice: testItem.price,
+      paymentMethod: 'stripe',
+      paymentStatus: 'pending',
+      status: 'opened',
+    });
+
+    const webhookPayload = {
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          id: 'cs_live_webhook_test_999',
+          client_reference_id: order._id.toString(),
+          payment_intent: 'pi_test_webhook_888',
+        },
+      },
+    };
+
+    const res = await request(app)
+      .post('/api/stripe/webhook')
+      .send(webhookPayload);
+
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.received, true);
+
+    const updated = await Order.findById(order._id);
+    assert.strictEqual(updated.paymentStatus, 'paid');
+    assert.strictEqual(updated.stripeDetails.sessionId, 'cs_live_webhook_test_999');
   });
 });
 

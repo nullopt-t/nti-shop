@@ -52,7 +52,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['cod', 'paymob'],
+      enum: ['cod', 'paymob', 'stripe'],
       default: 'cod',
       index: true,
     },
@@ -67,6 +67,11 @@ const orderSchema = new mongoose.Schema(
       clientSecret: { type: String, default: null },
       paymobOrderId: { type: String, default: null },
       transactionId: { type: String, default: null },
+    },
+    stripeDetails: {
+      sessionId: { type: String, default: null },
+      paymentIntentId: { type: String, default: null },
+      customerEmail: { type: String, default: null },
     },
     items: {
       type: [orderItemSnapshotSchema],

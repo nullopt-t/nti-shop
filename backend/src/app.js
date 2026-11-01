@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -15,7 +18,11 @@ const uploadsDir = path.resolve(__dirname, '../uploads');
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  },
+}));
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));

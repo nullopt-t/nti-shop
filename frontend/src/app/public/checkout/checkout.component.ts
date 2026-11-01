@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { CartService } from '../../core/services/cart.service';
-import { Order, CreateOrderPayload } from '../../core/models/order.model';
+import { Order, CreateOrderPayload, PaymentMethodType } from '../../core/models/order.model';
 
 @Component({
   selector: 'app-checkout',
@@ -19,23 +19,49 @@ export class CheckoutComponent implements OnInit {
   private route = inject(ActivatedRoute);
   readonly cartService = inject(CartService);
 
-  paymentMethod: 'cod' | 'paymob' = 'cod';
+  paymentMethod: PaymentMethodType = 'cod';
+  readonly availableMethods = signal<PaymentMethodType[]>(['cod', 'stripe']);
   name = '';
   phone = '';
   address = '';
+  email = '';
 
   readonly submitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
   readonly completedOrder = signal<Order | null>(null);
-  readonly paymobReturnNotice = signal<string | null>(null);
+  readonly paymentReturnNotice = signal<string | null>(null);
 
   ngOnInit(): void {
-    // Check if returning from Paymob Unified Checkout redirect
+    // Fetch available payment methods configured in the backend
+    this.api.getPaymentMethods().subscribe({
+      next: (res) => {
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const methods = res.data as PaymentMethodType[];
+          this.availableMethods.set(methods);
+          if (!methods.includes(this.paymentMethod)) {
+            this.paymentMethod = methods[0];
+          }
+        }
+      },
+      error: () => {
+        // Fallback to default
+        this.availableMethods.set(['cod', 'stripe']);
+      },
+    });
+
+    // Check if returning from payment gateway redirect
     const params = this.route.snapshot.queryParams;
     const orderId = params['orderId'];
+    const sessionId = params['session_id'];
+    const isCancelled = params['cancelled'] === 'true';
+
+    if (isCancelled) {
+      this.errorMessage.set('Payment was cancelled at the checkout gateway. You can retry or choose an alternative method.');
+      return;
+    }
 
     if (orderId) {
-      const isSuccessParam = params['success'] === 'true';
+      const isSuccessParam = params['success'] === 'true' || Boolean(sessionId);
       const isPendingParam = params['pending'] === 'true';
       const isFailedParam = params['success'] === 'false';
 
@@ -44,19 +70,19 @@ export class CheckoutComponent implements OnInit {
         return;
       }
 
-      // Verify source-of-truth status from server database
-      this.api.getOrderStatus(orderId).subscribe({
+      // Verify status directly from server database (with direct Stripe session retrieval if session_id is provided)
+      this.api.getOrderStatus(orderId, sessionId).subscribe({
         next: (res) => {
           this.cartService.clearCart();
           const ord = res.data;
 
           if (ord.paymentStatus === 'paid' || isSuccessParam) {
-            this.paymobReturnNotice.set(
+            this.paymentReturnNotice.set(
               `Payment confirmed for order #${ord._id}. Total settled: $${ord.totalPrice.toFixed(2)}. Our team is preparing your dispatch.`
             );
           } else if (ord.paymentStatus === 'pending' || isPendingParam) {
-            this.paymobReturnNotice.set(
-              `Your payment for order #${ord._id} is being processed by the bank. We will update you once confirmed.`
+            this.paymentReturnNotice.set(
+              `Your payment for order #${ord._id} is being processed. We will update you once confirmed.`
             );
           } else {
             this.errorMessage.set(
@@ -65,10 +91,9 @@ export class CheckoutComponent implements OnInit {
           }
         },
         error: () => {
-          // Fallback to query parameters if offline
           if (isSuccessParam) {
             this.cartService.clearCart();
-            this.paymobReturnNotice.set(
+            this.paymentReturnNotice.set(
               `Thank you! Your payment for order #${orderId} was received. Our team will verify and coordinate delivery.`
             );
           } else {
@@ -79,7 +104,11 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  setPaymentMethod(method: 'cod' | 'paymob'): void {
+  isMethodAvailable(method: PaymentMethodType): boolean {
+    return this.availableMethods().includes(method);
+  }
+
+  setPaymentMethod(method: PaymentMethodType): void {
     this.paymentMethod = method;
     this.errorMessage.set(null);
   }
@@ -112,6 +141,7 @@ export class CheckoutComponent implements OnInit {
         name: this.name.trim() || 'Guest Customer',
         phone: this.phone.trim() || 'N/A',
         address: this.address.trim() || 'N/A',
+        email: this.email.trim() || undefined,
       },
       items: this.cartService.items().map((entry) => ({
         itemId: entry.item._id,
@@ -123,9 +153,9 @@ export class CheckoutComponent implements OnInit {
       next: (res) => {
         this.submitting.set(false);
 
-        if (this.paymentMethod === 'paymob' && res.checkoutUrl) {
+        // Redirect to gateway if checkoutUrl is returned
+        if ((this.paymentMethod === 'paymob' || this.paymentMethod === 'stripe') && res.checkoutUrl) {
           this.cartService.clearCart();
-          // Redirect browser directly to Paymob Unified Checkout
           window.location.href = res.checkoutUrl;
           return;
         }

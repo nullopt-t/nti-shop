@@ -20,6 +20,10 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // --- PUBLIC ENDPOINTS ---
+  getPaymentMethods(): Observable<ApiResponse<string[]>> {
+    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/payment-methods`);
+  }
+
   getPublicCategories(): Observable<ApiResponse<string[]>> {
     return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/categories`);
   }
@@ -40,8 +44,12 @@ export class ApiService {
     return this.http.post<CreateOrderResponse>(`${this.baseUrl}/orders`, payload);
   }
 
-  getOrderStatus(orderId: string): Observable<ApiResponse<Order>> {
-    return this.http.get<ApiResponse<Order>>(`${this.baseUrl}/orders/${orderId}/status`);
+  getOrderStatus(orderId: string, sessionId?: string): Observable<ApiResponse<Order>> {
+    let params = new HttpParams();
+    if (sessionId) {
+      params = params.set('session_id', sessionId);
+    }
+    return this.http.get<ApiResponse<Order>>(`${this.baseUrl}/orders/${orderId}/status`, { params });
   }
 
   // --- MANAGER ENDPOINTS ---

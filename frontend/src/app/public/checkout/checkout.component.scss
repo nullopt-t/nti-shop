@@ -91,12 +91,8 @@
 
   .payment-tabs {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
-
-    @media (max-width: 600px) {
-      grid-template-columns: 1fr;
-    }
   }
 
   .payment-option-btn {
@@ -112,8 +108,11 @@
     transition: all 0.15s ease;
 
     .payment-icon {
-      font-size: 20px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .payment-name {
@@ -161,6 +160,17 @@
   background: rgba(59, 130, 246, 0.15);
   color: #60a5fa;
   border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.badge-stripe {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.3);
   padding: 2px 8px;
   border-radius: var(--radius-xs);
   font-size: 10px;

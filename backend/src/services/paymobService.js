@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import crypto from 'crypto';
 
 /**
@@ -5,13 +8,30 @@ import crypto from 'crypto';
  * Uses standard Node.js fetch and crypto with zero external dependencies.
  */
 export class PaymobService {
-  constructor() {
-    this.baseUrl = (process.env.PAYMOB_BASE_URL || 'https://accept.paymob.com').replace(/\/+$/, '');
-    this.secretKey = process.env.PAYMOB_SECRET_KEY || '';
-    this.publicKey = process.env.PAYMOB_PUBLIC_KEY || '';
-    this.integrationId = process.env.PAYMOB_INTEGRATION_ID ? parseInt(process.env.PAYMOB_INTEGRATION_ID, 10) : null;
-    this.hmacSecret = process.env.PAYMOB_HMAC_SECRET || '';
-    this.currency = process.env.PAYMOB_CURRENCY || 'EGP';
+  get baseUrl() {
+    return (process.env.PAYMOB_BASE_URL || 'https://accept.paymob.com')
+      .replace(/\/api\/?$/, '')
+      .replace(/\/+$/, '');
+  }
+
+  get secretKey() {
+    return (process.env.PAYMOB_SECRET_KEY || '').trim();
+  }
+
+  get publicKey() {
+    return (process.env.PAYMOB_PUBLIC_KEY || '').trim();
+  }
+
+  get integrationId() {
+    return process.env.PAYMOB_INTEGRATION_ID ? parseInt(process.env.PAYMOB_INTEGRATION_ID, 10) : null;
+  }
+
+  get hmacSecret() {
+    return (process.env.PAYMOB_HMAC_SECRET || '').trim();
+  }
+
+  get currency() {
+    return (process.env.PAYMOB_CURRENCY || 'EGP').trim();
   }
 
   /**
