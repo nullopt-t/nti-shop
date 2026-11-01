@@ -179,14 +179,26 @@ export async function handlePaymobWebhook(req, res, next) {
       return res.status(200).json({ success: true, message: 'Order not found' });
     }
 
+    const isPending = Boolean(transactionObj.pending);
     const isSuccess = Boolean(transactionObj.success);
-    order.paymentStatus = isSuccess ? 'paid' : 'failed';
+
+    if (isSuccess && !isPending) {
+      order.paymentStatus = 'paid';
+    } else if (isPending) {
+      order.paymentStatus = 'pending';
+    } else {
+      order.paymentStatus = 'failed';
+    }
+
     order.paymobDetails.transactionId = String(transactionObj.id);
 
-    if (isSuccess) {
+    if (isSuccess && !isPending) {
       order.notes = [order.notes, `Paid via Paymob transaction #${transactionObj.id}`].filter(Boolean).join(' | ');
+    } else if (isPending) {
+      order.notes = [order.notes, `Paymob payment pending #${transactionObj.id}`].filter(Boolean).join(' | ');
     } else {
-      order.notes = [order.notes, `Paymob payment failed #${transactionObj.id}`].filter(Boolean).join(' | ');
+      const declineReason = transactionObj.data?.message || transactionObj.txn_response_code || 'declined';
+      order.notes = [order.notes, `Paymob payment failed #${transactionObj.id} (${declineReason})`].filter(Boolean).join(' | ');
     }
 
     await order.save();
@@ -195,6 +207,32 @@ export async function handlePaymobWebhook(req, res, next) {
       success: true,
       message: 'Order payment status updated successfully',
       data: { orderId: order._id, paymentStatus: order.paymentStatus },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Public Order Payment Status Inquiry
+ * Used by frontend to verify payment status upon return from gateway.
+ */
+export async function getPublicOrderStatus(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid order ID' });
+    }
+
+    const order = await Order.findById(id).select('paymentMethod paymentStatus status totalPrice userDetails createdAt');
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: order,
     });
   } catch (error) {
     next(error);

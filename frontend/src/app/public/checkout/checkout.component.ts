@@ -32,16 +32,50 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     // Check if returning from Paymob Unified Checkout redirect
     const params = this.route.snapshot.queryParams;
-    if (params['orderId']) {
-      const isSuccess = params['success'] === 'true' || !params['success'];
-      if (isSuccess) {
-        this.paymobReturnNotice.set(
-          `Thank you! Your payment for order #${params['orderId']} has been recorded. Our team will verify and prepare your dispatch.`
-        );
-        this.cartService.clearCart();
-      } else {
-        this.errorMessage.set('Payment could not be completed via the gateway. Please try again.');
+    const orderId = params['orderId'];
+
+    if (orderId) {
+      const isSuccessParam = params['success'] === 'true';
+      const isPendingParam = params['pending'] === 'true';
+      const isFailedParam = params['success'] === 'false';
+
+      if (isFailedParam) {
+        this.errorMessage.set('Payment was declined or cancelled at the gateway. Please retry or choose Cash on Delivery.');
+        return;
       }
+
+      // Verify source-of-truth status from server database
+      this.api.getOrderStatus(orderId).subscribe({
+        next: (res) => {
+          this.cartService.clearCart();
+          const ord = res.data;
+
+          if (ord.paymentStatus === 'paid' || isSuccessParam) {
+            this.paymobReturnNotice.set(
+              `Payment confirmed for order #${ord._id}. Total settled: $${ord.totalPrice.toFixed(2)}. Our team is preparing your dispatch.`
+            );
+          } else if (ord.paymentStatus === 'pending' || isPendingParam) {
+            this.paymobReturnNotice.set(
+              `Your payment for order #${ord._id} is being processed by the bank. We will update you once confirmed.`
+            );
+          } else {
+            this.errorMessage.set(
+              `Payment for order #${ord._id} could not be settled. Status: ${ord.paymentStatus}.`
+            );
+          }
+        },
+        error: () => {
+          // Fallback to query parameters if offline
+          if (isSuccessParam) {
+            this.cartService.clearCart();
+            this.paymobReturnNotice.set(
+              `Thank you! Your payment for order #${orderId} was received. Our team will verify and coordinate delivery.`
+            );
+          } else {
+            this.errorMessage.set('Payment could not be confirmed. Please check your banking app.');
+          }
+        },
+      });
     }
   }
 

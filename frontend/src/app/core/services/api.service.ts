@@ -40,6 +40,10 @@ export class ApiService {
     return this.http.post<CreateOrderResponse>(`${this.baseUrl}/orders`, payload);
   }
 
+  getOrderStatus(orderId: string): Observable<ApiResponse<Order>> {
+    return this.http.get<ApiResponse<Order>>(`${this.baseUrl}/orders/${orderId}/status`);
+  }
+
   // --- MANAGER ENDPOINTS ---
   getManagerCategories(): Observable<ApiResponse<string[]>> {
     return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/manager/categories`);
