@@ -50,9 +50,37 @@ html, body {
 }
 
 /* Ensure all form input controls, textareas, selects, and buttons inherit the system font */
-input, textarea, select, button {
+input, textarea, select {
   font-family: inherit;
   font-size: inherit;
+}
+
+/* Standard Language Toggle Button */
+.btn-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+  padding: 6px 12px !important;
+  background-color: var(--bg-surface, #ffffff) !important;
+  border: 1px solid var(--border-medium, #cbd5e1) !important;
+  border-radius: var(--radius-xs, 2px) !important;
+  color: var(--text-primary, #090a0f) !important;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #090a0f !important;
+    color: #ffffff !important;
+    border-color: #090a0f !important;
+  }
 }
 
 a {
