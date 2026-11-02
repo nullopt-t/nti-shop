@@ -145,16 +145,34 @@
                     </table>
                   </div>
 
-                  <!-- Telephone Log & Notes -->
+                  <!-- Telephone Log & Activity Sequence -->
                   <div class="log-column">
-                    <span class="column-subtitle">PHONE CALL LOG & SCHEDULING</span>
-                    <textarea 
-                      class="form-control call-notes-input"
-                      placeholder="Record client confirmation details, confirmed sizing, delivery appointment..."
-                      [(ngModel)]="editingNotesMap()[order._id]"></textarea>
-                    <button class="btn btn-sm btn-primary save-btn" (click)="saveOrderNotes(order._id)">
-                      SAVE CALL LOG
-                    </button>
+                    <span class="column-subtitle">COMMUNICATIONS & AUDIT LOG</span>
+
+                    <!-- Sequence of Log Entries -->
+                    <div class="notes-log-feed">
+                      @if (!order.notes || order.notes.length === 0) {
+                        <div class="notes-empty">No activity recorded yet.</div>
+                      } @else {
+                        @for (note of order.notes; track $index) {
+                          <div class="log-entry">
+                            <span class="log-time">{{ note.time | date:'MMM d, y, h:mm:ss a' }}</span>
+                            <p class="log-content">{{ note.content }}</p>
+                          </div>
+                        }
+                      }
+                    </div>
+
+                    <!-- Add New Note Form -->
+                    <div class="add-note-box">
+                      <textarea 
+                        class="form-control call-notes-input"
+                        placeholder="Add call log entry, verified sizing, delivery update..."
+                        [(ngModel)]="editingNotesMap()[order._id]"></textarea>
+                      <button class="btn btn-sm btn-primary save-btn" (click)="saveOrderNotes(order._id)">
+                        + ADD TO LOG
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

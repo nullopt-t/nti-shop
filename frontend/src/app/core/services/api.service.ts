@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Item } from '../models/item.model';
-import { Order, CreateOrderPayload, CreateOrderResponse } from '../models/order.model';
+import { Order, OrderNote, CreateOrderPayload, CreateOrderResponse } from '../models/order.model';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -89,7 +89,7 @@ export class ApiService {
 
   updateManagerOrder(
     id: string,
-    update: { status?: 'opened' | 'closed'; notes?: string }
+    update: { status?: 'opened' | 'closed'; notes?: string | OrderNote[] }
   ): Observable<ApiResponse<Order>> {
     return this.http.patch<ApiResponse<Order>>(`${this.baseUrl}/manager/orders/${id}`, update);
   }

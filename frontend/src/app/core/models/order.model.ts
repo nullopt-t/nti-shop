@@ -28,6 +28,11 @@ export interface StripeDetails {
 
 export type PaymentMethodType = 'cod' | 'paymob' | 'stripe';
 
+export interface OrderNote {
+  time: string;
+  content: string;
+}
+
 export interface Order {
   _id: string;
   userDetails: UserDetails;
@@ -38,7 +43,7 @@ export interface Order {
   paymobDetails?: PaymobDetails;
   stripeDetails?: StripeDetails;
   status: 'opened' | 'closed';
-  notes?: string;
+  notes?: OrderNote[];
   createdAt: string;
   updatedAt?: string;
 }

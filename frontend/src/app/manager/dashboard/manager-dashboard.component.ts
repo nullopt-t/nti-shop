@@ -68,11 +68,6 @@ export class ManagerDashboardComponent implements OnInit {
     this.api.getManagerOrders(filter).subscribe({
       next: (res) => {
         this.orders.set(res.data);
-        const notesMap: { [id: string]: string } = {};
-        res.data.forEach((o) => {
-          notesMap[o._id] = o.notes || '';
-        });
-        this.editingNotesMap.set(notesMap);
       },
       error: (err) => this.handleAuthError(err),
     });
@@ -95,10 +90,22 @@ export class ManagerDashboardComponent implements OnInit {
   }
 
   saveOrderNotes(orderId: string): void {
-    const notes = this.editingNotesMap()[orderId] || '';
-    this.api.updateManagerOrder(orderId, { notes }).subscribe({
-      next: () => this.notify('Manager call notes saved.'),
-      error: () => this.notify('Failed to save notes', 'error'),
+    const noteText = (this.editingNotesMap()[orderId] || '').trim();
+    if (!noteText) {
+      this.notify('Please enter a note before adding to log', 'error');
+      return;
+    }
+
+    this.api.updateManagerOrder(orderId, { notes: noteText }).subscribe({
+      next: () => {
+        this.notify('New log entry recorded.');
+        // Clear input for this order
+        const map = { ...this.editingNotesMap() };
+        map[orderId] = '';
+        this.editingNotesMap.set(map);
+        this.loadOrders();
+      },
+      error: () => this.notify('Failed to save log entry', 'error'),
     });
   }
 
