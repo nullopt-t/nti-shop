@@ -4,6 +4,7 @@ dist/
 .angular/
 .DS_Store
 *.log
+bin/
 backend/uploads/*
 !backend/uploads/.gitkeep
 
