@@ -77,6 +77,27 @@ export class ManagerDashboardComponent implements OnInit {
     return itm.category;
   }
 
+  getOrderItemDisplayName(it: any): string {
+    const lang = this.langService.currentLanguage();
+    if (lang !== 'en') {
+      // 1. Check snapshot translations
+      if (it.translations?.[lang]?.name) {
+        return it.translations[lang].name;
+      }
+      // 2. Check populated itemId translations (for existing and new orders)
+      const populatedItem = typeof it.itemId === 'object' && it.itemId !== null ? it.itemId : null;
+      if (populatedItem?.translations?.[lang]?.name) {
+        return populatedItem.translations[lang].name;
+      }
+      // 3. Check loaded items map
+      const foundItem = this.items().find((item) => item._id === (populatedItem?._id || it.itemId));
+      if (foundItem?.translations?.[lang]?.name) {
+        return foundItem.translations[lang].name;
+      }
+    }
+    return it.name;
+  }
+
   // --- ORDERS TAB ---
   loadOrders(): void {
     const filter = this.orderStatusFilter() === 'all' ? undefined : this.orderStatusFilter();

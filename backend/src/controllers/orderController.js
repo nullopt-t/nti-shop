@@ -103,12 +103,28 @@ export async function createPublicOrder(req, res, next) {
       const subtotal = Math.round(dbItem.price * qty * 100) / 100;
       totalPrice = Math.round((totalPrice + subtotal) * 100) / 100;
 
+      const itemTranslations = {};
+      if (dbItem.translations) {
+        if (dbItem.translations instanceof Map) {
+          for (const [l, t] of dbItem.translations.entries()) {
+            if (t?.name) itemTranslations[l] = { name: t.name };
+          }
+        } else if (typeof dbItem.translations === 'object') {
+          for (const l of Object.keys(dbItem.translations)) {
+            if (dbItem.translations[l]?.name) {
+              itemTranslations[l] = { name: dbItem.translations[l].name };
+            }
+          }
+        }
+      }
+
       itemSnapshots.push({
         itemId: dbItem._id,
         name: dbItem.name,
         price: dbItem.price,
         quantity: qty,
         subtotal,
+        translations: itemTranslations,
       });
     }
 

@@ -1,9 +1,12 @@
 export interface OrderItemSnapshot {
-  itemId: string;
+  itemId: string | any;
   name: string;
   price: number;
   quantity: number;
   subtotal: number;
+  translations?: {
+    [lang: string]: { name?: string };
+  };
 }
 
 export interface UserDetails {

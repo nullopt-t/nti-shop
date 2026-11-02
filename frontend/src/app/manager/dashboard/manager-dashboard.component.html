@@ -123,23 +123,23 @@
                     <table class="board-table items-table-compact">
                       <thead>
                         <tr>
-                          <th>ITEM</th>
-                          <th style="width: 50px; text-align: center;">QTY</th>
-                          <th style="width: 80px; text-align: right;">PRICE</th>
-                          <th style="width: 80px; text-align: right;">SUBTOTAL</th>
+                          <th>{{ langService.t().itemCol }}</th>
+                          <th style="width: 50px; text-align: center;">{{ langService.t().qtyCol }}</th>
+                          <th style="width: 80px; text-align: right;">{{ langService.t().priceCol }}</th>
+                          <th style="width: 80px; text-align: right;">{{ langService.t().totalCol }}</th>
                         </tr>
                       </thead>
                       <tbody>
-                        @for (it of order.items; track it.itemId) {
+                        @for (it of order.items; track (it.itemId?._id || it.itemId || $index)) {
                           <tr>
-                            <td>{{ it.name }}</td>
+                            <td>{{ getOrderItemDisplayName(it) }}</td>
                             <td style="text-align: center;">{{ it.quantity }}</td>
                             <td style="text-align: right;" class="price-tag">${{ it.price.toFixed(2) }}</td>
                             <td style="text-align: right;" class="price-tag">${{ it.subtotal.toFixed(2) }}</td>
                           </tr>
                         }
                         <tr class="sum-row">
-                          <td colspan="3" style="text-align: right; font-weight: 700;">TOTAL PAYABLE:</td>
+                          <td colspan="3" style="text-align: right; font-weight: 700;">{{ langService.currentLanguage() === 'ar' ? 'الإجمالي المطلوب:' : 'TOTAL PAYABLE:' }}</td>
                           <td style="text-align: right;" class="price-tag total-bold">${{ order.totalPrice.toFixed(2) }}</td>
                         </tr>
                       </tbody>

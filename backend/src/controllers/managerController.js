@@ -163,7 +163,7 @@ export async function getManagerOrders(req, res, next) {
       filter.status = status;
     }
 
-    const orders = await Order.find(filter).sort({ createdAt: -1 });
+    const orders = await Order.find(filter).populate('items.itemId', 'name translations').sort({ createdAt: -1 });
     res.status(200).json({ success: true, count: orders.length, data: orders });
   } catch (error) {
     next(error);

@@ -27,6 +27,16 @@ const orderItemSnapshotSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    translations: {
+      type: Map,
+      of: new mongoose.Schema(
+        {
+          name: { type: String, trim: true },
+        },
+        { _id: false }
+      ),
+      default: {},
+    },
   },
   { _id: false }
 );
