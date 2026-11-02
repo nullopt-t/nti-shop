@@ -78,6 +78,10 @@ export class ApiService {
     return this.http.get<ApiResponse<Item[]>>(`${this.baseUrl}/manager/items`);
   }
 
+  getManagerItemById(id: string): Observable<ApiResponse<Item>> {
+    return this.http.get<ApiResponse<Item>>(`${this.baseUrl}/manager/items/${id}`);
+  }
+
   createManagerItem(data: Partial<Item>): Observable<ApiResponse<Item>> {
     return this.http.post<ApiResponse<Item>>(`${this.baseUrl}/manager/items`, data);
   }

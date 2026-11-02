@@ -1,16 +1,17 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
+import { LanguageService } from '../../core/services/language.service';
 import { Item } from '../../core/models/item.model';
 import { Order } from '../../core/models/order.model';
 
 @Component({
   selector: 'app-manager-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './manager-dashboard.component.html',
   styleUrl: './manager-dashboard.component.scss',
 })
@@ -18,6 +19,7 @@ export class ManagerDashboardComponent implements OnInit {
   private api = inject(ApiService);
   private auth = inject(AuthService);
   private router = inject(Router);
+  readonly langService = inject(LanguageService);
 
   // Active Tab: 'orders' | 'items'
   readonly activeTab = signal<'orders' | 'items'>('orders');
@@ -29,17 +31,6 @@ export class ManagerDashboardComponent implements OnInit {
 
   // Items State (Category Column & CRUD)
   readonly items = signal<Item[]>([]);
-  readonly showItemModal = signal<boolean>(false);
-  readonly editingItemId = signal<string | null>(null);
-  readonly uploadingImage = signal<boolean>(false);
-  readonly imagePreview = signal<string | null>(null);
-  itemForm = {
-    category: '',
-    name: '',
-    description: '',
-    price: 0,
-    image: '',
-  };
 
   // Distinct Categories (extracted dynamically from items)
   readonly categories = signal<string[]>([]);
@@ -124,87 +115,8 @@ export class ManagerDashboardComponent implements OnInit {
     });
   }
 
-  openAddItem(): void {
-    this.editingItemId.set(null);
-    this.imagePreview.set(null);
-    this.itemForm = {
-      category: this.categories()[0] || 'Apparel',
-      name: '',
-      description: '',
-      price: 29.99,
-      image: '',
-    };
-    this.showItemModal.set(true);
-  }
-
-  openEditItem(item: Item): void {
-    this.editingItemId.set(item._id);
-    this.imagePreview.set(item.image);
-    this.itemForm = {
-      category: item.category || '',
-      name: item.name,
-      description: item.description,
-      price: item.price,
-      image: item.image,
-    };
-    this.showItemModal.set(true);
-  }
-
-  onImageFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    this.uploadingImage.set(true);
-
-    this.api.uploadImage(file).subscribe({
-      next: (res) => {
-        this.itemForm.image = res.imageUrl;
-        this.imagePreview.set(res.imageUrl);
-        this.uploadingImage.set(false);
-        this.notify('Image uploaded successfully.');
-      },
-      error: (err) => {
-        this.uploadingImage.set(false);
-        this.notify(err.error?.message || 'Failed to upload image', 'error');
-      },
-    });
-  }
-
-  saveItem(): void {
-    const id = this.editingItemId();
-    if (!this.itemForm.name.trim() || !this.itemForm.category.trim()) {
-      this.notify('Please fill all required item fields (name, category)', 'error');
-      return;
-    }
-
-    if (id) {
-      // Update
-      this.api.updateManagerItem(id, this.itemForm).subscribe({
-        next: () => {
-          this.notify('Clothing item and inventory updated.');
-          this.showItemModal.set(false);
-          this.loadItems();
-          this.loadCategories();
-        },
-        error: (err) => this.notify(err.error?.message || 'Failed to update item', 'error'),
-      });
-    } else {
-      // Create
-      this.api.createManagerItem(this.itemForm).subscribe({
-        next: () => {
-          this.notify('New clothing item created in catalog.');
-          this.showItemModal.set(false);
-          this.loadItems();
-          this.loadCategories();
-        },
-        error: (err) => this.notify(err.error?.message || 'Failed to create item', 'error'),
-      });
-    }
-  }
-
   deleteItem(id: string): void {
-    if (!confirm('Are you sure you want to delete this clothing item?')) return;
+    if (!confirm(this.langService.t().confirmDelete)) return;
     this.api.deleteManagerItem(id).subscribe({
       next: () => {
         this.notify('Item removed from catalog.');

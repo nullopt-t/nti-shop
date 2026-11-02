@@ -5,21 +5,30 @@
       <div class="brand-block">
         <a routerLink="/manager/dashboard" class="brand-link">
           <span class="brand-title">ROCK</span>
-          <span class="manager-badge">STAFF CONSOLE</span>
+          <span class="manager-badge">{{ langService.t().staffConsole }}</span>
         </a>
       </div>
 
       <div class="manager-header-actions">
+        <button
+          type="button"
+          class="btn-lang-toggle"
+          (click)="langService.toggleLanguage()"
+          [title]="langService.currentLanguage() === 'en' ? 'التبديل إلى العربية' : 'Switch to English'"
+        >
+          {{ langService.currentLanguage() === 'en' ? 'AR' : 'EN' }}
+        </button>
+
         @if (authService.isAuthenticated()) {
           <a routerLink="/" class="btn-shop-preview" title="View Public Storefront">
-            ↗ VIEW PUBLIC SHOP
+            {{ langService.t().viewPublicShop }}
           </a>
           <button class="btn-manager-logout" (click)="logoutManager()" title="Sign out of Console">
-            LOGOUT
+            {{ langService.t().logout }}
           </button>
         } @else {
           <a routerLink="/" class="btn-shop-preview">
-            ← RETURN TO SHOP
+            {{ langService.t().returnToShop }}
           </a>
         }
       </div>

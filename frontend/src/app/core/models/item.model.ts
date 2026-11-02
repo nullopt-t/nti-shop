@@ -1,3 +1,9 @@
+export interface ItemTranslation {
+  name?: string;
+  description?: string;
+  category?: string;
+}
+
 export interface Item {
   _id: string;
   category: string;
@@ -5,6 +11,9 @@ export interface Item {
   description: string;
   price: number;
   image: string;
+  translations?: {
+    [lang: string]: ItemTranslation;
+  };
   createdAt?: string;
   updatedAt?: string;
 }

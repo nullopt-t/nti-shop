@@ -1,0 +1,176 @@
+<div class="manager-form-container">
+  @if (notification()) {
+    <div class="notification-toast" [class.error]="notification()?.type === 'error'">
+      {{ notification()?.text }}
+    </div>
+  }
+
+  <div class="form-header-bar">
+    <div class="header-titles">
+      <a routerLink="/manager/dashboard" class="back-link">
+        ← {{ langService.t().cancel }}
+      </a>
+      <h1 class="page-title">
+        {{ isEditMode() ? langService.t().itemFormTitleEdit : langService.t().itemFormTitleCreate }}
+      </h1>
+      <p class="page-subtitle">
+        {{ langService.t().itemFormSubtitle }}
+      </p>
+    </div>
+
+    <div class="form-actions-top">
+      <button
+        type="button"
+        class="btn-save-primary"
+        [disabled]="saving()"
+        (click)="saveProduct()"
+      >
+        @if (saving()) {
+          ...
+        } @else {
+          {{ isEditMode() ? langService.t().saveChanges : langService.t().createItemBtn }}
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading product details...</p>
+    </div>
+  } @else {
+    <form (ngSubmit)="saveProduct()" class="product-form-grid">
+      <!-- Left Column: English (Default) Details -->
+      <section class="form-card english-card">
+        <div class="card-badge en-badge">EN</div>
+        <h2 class="card-title">{{ langService.t().englishDetails }}</h2>
+
+        <div class="form-group">
+          <label>{{ langService.t().itemNameEn }}</label>
+          <input
+            type="text"
+            [(ngModel)]="itemForm.name"
+            name="nameEn"
+            placeholder="e.g. Heavyweight Fleece Hoodie"
+            required
+            class="input-control"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>{{ langService.t().itemCategoryEn }}</label>
+            <input
+              type="text"
+              list="categoriesList"
+              [(ngModel)]="itemForm.category"
+              name="categoryEn"
+              placeholder="e.g. Hoodies, Denim, Accessories"
+              required
+              class="input-control"
+            />
+            <datalist id="categoriesList">
+              @for (cat of categories(); track cat) {
+                <option [value]="cat"></option>
+              }
+            </datalist>
+          </div>
+
+          <div class="form-group flex-1">
+            <label>{{ langService.t().itemPrice }}</label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              [(ngModel)]="itemForm.price"
+              name="price"
+              required
+              class="input-control"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{ langService.t().itemDescEn }}</label>
+          <textarea
+            [(ngModel)]="itemForm.description"
+            name="descriptionEn"
+            rows="5"
+            placeholder="Detailed fabric specs, cut, and material notes in English..."
+            required
+            class="input-control textarea-control"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>{{ langService.t().productImage }}</label>
+          <div class="image-upload-wrapper">
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onImageFileSelected($event)"
+              class="file-input"
+              id="fileUpload"
+            />
+            <label for="fileUpload" class="file-label">
+              {{ uploadingImage() ? langService.t().uploading : 'UPLOAD IMAGE FILE' }}
+            </label>
+            <input
+              type="url"
+              [(ngModel)]="itemForm.image"
+              name="image"
+              placeholder="Or paste external image URL..."
+              class="input-control"
+            />
+          </div>
+
+          @if (imagePreview() || itemForm.image) {
+            <div class="preview-box">
+              <img [src]="imagePreview() || itemForm.image" alt="Product Preview" class="preview-img" />
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Right Column: Arabic Translation Details -->
+      <section class="form-card arabic-card" dir="rtl">
+        <div class="card-badge ar-badge">AR</div>
+        <h2 class="card-title">{{ langService.t().arabicTranslations }}</h2>
+
+        <div class="form-group">
+          <label>{{ langService.t().itemNameAr }}</label>
+          <input
+            type="text"
+            [(ngModel)]="itemForm.translations.ar.name"
+            name="nameAr"
+            placeholder="مثال: هودي روك ثقيل من الصوف"
+            class="input-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>{{ langService.t().itemCategoryAr }}</label>
+          <input
+            type="text"
+            [(ngModel)]="itemForm.translations.ar.category"
+            name="categoryAr"
+            placeholder="مثال: هوديز، جينز، إكسسوارات"
+            class="input-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>{{ langService.t().itemDescAr }}</label>
+          <textarea
+            [(ngModel)]="itemForm.translations.ar.description"
+            name="descriptionAr"
+            rows="7"
+            placeholder="اكتب مواصفات المنتج والنسيج والتفاصيل باللغة العربية..."
+            class="input-control textarea-control"
+          ></textarea>
+        </div>
+      </section>
+    </form>
+  }
+</div>

@@ -6,6 +6,7 @@ import { CheckoutComponent } from './public/checkout/checkout.component';
 import { FavoritesComponent } from './public/favorites/favorites.component';
 import { ManagerLoginComponent } from './manager/login/manager-login.component';
 import { ManagerDashboardComponent } from './manager/dashboard/manager-dashboard.component';
+import { ManagerItemFormComponent } from './manager/item-form/manager-item-form.component';
 import { managerAuthGuard } from './core/guards/manager-auth.guard';
 
 export const routes: Routes = [
@@ -20,6 +21,12 @@ export const routes: Routes = [
     component: ManagerDashboardComponent,
     canActivate: [managerAuthGuard],
     title: 'ROCK // Operations Console',
+  },
+  {
+    path: 'manager/items/:id',
+    component: ManagerItemFormComponent,
+    canActivate: [managerAuthGuard],
+    title: 'ROCK // Product Editor',
   },
   { path: '**', redirectTo: '' },
 ];

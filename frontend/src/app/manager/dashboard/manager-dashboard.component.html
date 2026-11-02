@@ -9,8 +9,9 @@
   <!-- Admin Controls Top Bar -->
   <div class="dashboard-header-bar">
     <div class="header-titles">
-      <span class="portal-tag">STAFF CONSOLE</span>
-      <h1 class="portal-heading">OPERATIONS & DISPATCH</h1>
+      <span class="portal-tag">{{ langService.t().staffConsole }}</span>
+      <h1 class="portal-heading">{{ langService.t().operationsConsole }}</h1>
+      <p class="portal-subtitle">{{ langService.t().operationsSubtitle }}</p>
     </div>
 
     <div class="header-nav-tabs">
@@ -18,14 +19,14 @@
         class="tab-btn" 
         [class.active]="activeTab() === 'orders'" 
         (click)="activeTab.set('orders')">
-        ORDERS ({{ orders().length }})
+        {{ langService.t().ordersTab }} ({{ orders().length }})
       </button>
 
       <button 
         class="tab-btn" 
         [class.active]="activeTab() === 'items'" 
         (click)="activeTab.set('items')">
-        INVENTORY ({{ items().length }})
+        {{ langService.t().itemsTab }} ({{ items().length }})
       </button>
 
       <button class="btn btn-sm btn-refresh" (click)="refreshAllData()" title="Reload Data">
@@ -39,25 +40,25 @@
     <div class="board-panel">
       <div class="panel-header">
         <div class="filter-controls">
-          <span class="panel-title">DISPATCH QUEUE</span>
+          <span class="panel-title">{{ langService.t().ordersTab }}</span>
           <div class="pill-group">
             <button 
               class="pill-btn" 
               [class.active]="orderStatusFilter() === 'all'" 
               (click)="setOrderFilter('all')">
-              ALL
+              {{ langService.t().filterAll }}
             </button>
             <button 
               class="pill-btn" 
               [class.active]="orderStatusFilter() === 'opened'" 
               (click)="setOrderFilter('opened')">
-              PENDING
+              {{ langService.t().filterOpened }}
             </button>
             <button 
               class="pill-btn" 
               [class.active]="orderStatusFilter() === 'closed'" 
               (click)="setOrderFilter('closed')">
-              FULFILLED
+              {{ langService.t().filterClosed }}
             </button>
           </div>
         </div>
@@ -65,7 +66,7 @@
 
       <div class="panel-body">
         @if (orders().length === 0) {
-          <div class="empty-state">No client orders found in this view.</div>
+          <div class="empty-state">{{ langService.t().noOrdersFound }}</div>
         } @else {
           <div class="orders-feed">
             @for (order of orders(); track order._id) {
@@ -73,7 +74,7 @@
                 <!-- Header -->
                 <div class="order-top-row">
                   <div class="order-ref-group">
-                    <span class="ref-id">ORDER #{{ order._id }}</span>
+                    <span class="ref-id">{{ langService.t().orderId }} #{{ order._id }}</span>
                     <span class="order-date">{{ order.createdAt | date:'MMM d, y, h:mm a' }}</span>
                   </div>
 
@@ -84,7 +85,7 @@
                       [class.badge-closed]="order.status === 'closed'"
                       (click)="toggleOrderStatus(order)"
                       title="Click to toggle status">
-                      {{ order.status === 'opened' ? '● PENDING CONFIRMATION' : '✓ FULFILLED' }} ⇄
+                      {{ order.status === 'opened' ? ('● ' + langService.t().markClosed) : ('✓ ' + langService.t().reopenOrder) }} ⇄
                     </button>
                   </div>
                 </div>
@@ -93,7 +94,7 @@
                 <div class="order-main-grid">
                   <!-- Client Information -->
                   <div class="client-column">
-                    <span class="column-subtitle">CLIENT DETAILS</span>
+                    <span class="column-subtitle">{{ langService.t().customer }}</span>
                     <p class="client-name"><strong>{{ order.userDetails.name }}</strong></p>
                     <p class="client-phone">
                       <a [href]="'tel:' + order.userDetails.phone" class="phone-link">
@@ -108,17 +109,17 @@
                     <!-- Payment Mode & Status -->
                     <div class="payment-info-tag" style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;">
                       <span class="badge" [style.background]="order.paymentMethod === 'stripe' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.08)'" [style.color]="order.paymentMethod === 'stripe' ? '#818cf8' : 'var(--text-primary)'">
-                        {{ order.paymentMethod === 'stripe' ? 'STRIPE GATEWAY' : 'CASH ON DELIVERY' }}
+                        {{ order.paymentMethod === 'stripe' ? 'STRIPE' : 'CASH ON DELIVERY' }}
                       </span>
                       <span class="badge" [style.background]="order.paymentStatus === 'paid' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(234, 179, 8, 0.2)'" [style.color]="order.paymentStatus === 'paid' ? '#4ade80' : '#facc15'">
-                        {{ order.paymentStatus === 'paid' ? 'PAID' : 'PENDING PAYMENT' }}
+                        {{ order.paymentStatus.toUpperCase() }}
                       </span>
                     </div>
                   </div>
 
                   <!-- Purchased Items Breakdown -->
                   <div class="items-column">
-                    <span class="column-subtitle">PURCHASE SNAPSHOT</span>
+                    <span class="column-subtitle">{{ langService.t().itemsOrdered }}</span>
                     <table class="board-table items-table-compact">
                       <thead>
                         <tr>
@@ -147,12 +148,12 @@
 
                   <!-- Telephone Log & Activity Sequence -->
                   <div class="log-column">
-                    <span class="column-subtitle">COMMUNICATIONS & AUDIT LOG</span>
+                    <span class="column-subtitle">{{ langService.t().orderNotesLogs }}</span>
 
                     <!-- Sequence of Log Entries -->
                     <div class="notes-log-feed">
                       @if (!order.notes || order.notes.length === 0) {
-                        <div class="notes-empty">No activity recorded yet.</div>
+                        <div class="notes-empty">{{ langService.t().noNotesYet }}</div>
                       } @else {
                         @for (note of order.notes; track $index) {
                           <div class="log-entry">
@@ -167,10 +168,10 @@
                     <div class="add-note-box">
                       <textarea 
                         class="form-control call-notes-input"
-                        placeholder="Add call log entry, verified sizing, delivery update..."
+                        [placeholder]="langService.t().addNotePlaceholder"
                         [(ngModel)]="editingNotesMap()[order._id]"></textarea>
                       <button class="btn btn-sm btn-primary save-btn" (click)="saveOrderNotes(order._id)">
-                        + ADD TO LOG
+                        {{ langService.t().addNoteBtn }}
                       </button>
                     </div>
                   </div>
@@ -187,140 +188,64 @@
   @if (activeTab() === 'items') {
     <div class="board-panel">
       <div class="panel-header">
-        <span class="panel-title">CATALOG & INVENTORY MANAGEMENT</span>
-        <button class="btn btn-sm btn-primary" (click)="openAddItem()">+ ADD NEW PRODUCT</button>
+        <span class="panel-title">{{ langService.t().clothingCatalog }}</span>
+        <a routerLink="/manager/items/new" class="btn btn-sm btn-primary">+ {{ langService.t().addNewItem }}</a>
       </div>
 
       <div class="panel-body">
         <table class="board-table">
           <thead>
             <tr>
-              <th style="width: 60px;">IMAGE</th>
-              <th>PRODUCT NAME & SPECIFICATIONS</th>
-              <th style="width: 140px;">COLLECTION</th>
-              <th style="width: 100px;">PRICE</th>
-              <th style="width: 140px; text-align: right;">ACTIONS</th>
+              <th style="width: 60px;">{{ langService.t().image }}</th>
+              <th>{{ langService.t().name }}</th>
+              <th style="width: 140px;">{{ langService.t().category }}</th>
+              <th style="width: 100px;">{{ langService.t().price }}</th>
+              <th style="width: 180px; text-align: right;">{{ langService.t().actions }}</th>
             </tr>
           </thead>
           <tbody>
-            @for (itm of items(); track itm._id) {
+            @if (items().length === 0) {
               <tr>
-                <td>
-                  @if (itm.image) {
-                    <img [src]="itm.image" [alt]="itm.name" class="inventory-thumb" />
-                  } @else {
-                    <div class="inventory-thumb thumb-placeholder">
-                      <span>{{ itm.name }}</span>
-                    </div>
-                  }
-                </td>
-                <td>
-                  <strong class="inventory-title">{{ itm.name }}</strong>
-                  <p class="inventory-desc">{{ itm.description }}</p>
-                </td>
-                <td>
-                  <span class="badge badge-category">{{ itm.category }}</span>
-                </td>
-                <td class="price-tag">${{ itm.price.toFixed(2) }}</td>
-                <td style="text-align: right;">
-                  <button class="btn btn-sm" (click)="openEditItem(itm)" style="margin-right: 6px;">EDIT</button>
-                  <button class="btn btn-sm btn-danger" (click)="deleteItem(itm._id)">DELETE</button>
-                </td>
+                <td colspan="5" class="empty-state">{{ langService.t().noItemsFound }}</td>
               </tr>
+            } @else {
+              @for (itm of items(); track itm._id) {
+                <tr>
+                  <td>
+                    @if (itm.image) {
+                      <img [src]="itm.image" [alt]="itm.name" class="inventory-thumb" />
+                    } @else {
+                      <div class="inventory-thumb thumb-placeholder">
+                        <span>{{ itm.name }}</span>
+                      </div>
+                    }
+                  </td>
+                  <td>
+                    <strong class="inventory-title">{{ itm.name }}</strong>
+                    <p class="inventory-desc">{{ itm.description }}</p>
+                    @if (itm.translations?.['ar']?.name) {
+                      <p class="inventory-trans-ar" style="font-size: 11.5px; color: #2563eb; margin: 4px 0 0;" dir="rtl">
+                        AR: {{ itm.translations?.['ar']?.name }}
+                      </p>
+                    }
+                  </td>
+                  <td>
+                    <span class="badge badge-category">{{ itm.category }}</span>
+                  </td>
+                  <td class="price-tag">${{ itm.price.toFixed(2) }}</td>
+                  <td style="text-align: right;">
+                    <a [routerLink]="['/manager/items', itm._id]" class="btn btn-sm" style="margin-right: 6px; text-decoration: none; display: inline-block;">
+                      {{ langService.t().edit }}
+                    </a>
+                    <button class="btn btn-sm btn-danger" (click)="deleteItem(itm._id)">
+                      {{ langService.t().delete }}
+                    </button>
+                  </td>
+                </tr>
+              }
             }
           </tbody>
         </table>
-      </div>
-    </div>
-  }
-
-  <!-- ================= MODALS ================= -->
-
-  <!-- Product Modal -->
-  @if (showItemModal()) {
-    <div class="modal-backdrop">
-      <div class="modal-card">
-        <div class="modal-header">
-          <span>{{ editingItemId() ? 'EDIT PRODUCT' : 'NEW PRODUCT' }}</span>
-          <button class="modal-close" (click)="showItemModal.set(false)">✕</button>
-        </div>
-        <div class="modal-body">
-          <form (ngSubmit)="saveItem()">
-            <div class="form-group">
-              <label>COLLECTION CATEGORY *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                list="categoryList"
-                placeholder="Select or enter category (e.g. Hoodies, Denim)"
-                [(ngModel)]="itemForm.category" 
-                name="category" 
-                required />
-              <datalist id="categoryList">
-                @for (c of categories(); track c) {
-                  <option [value]="c"></option>
-                }
-              </datalist>
-            </div>
-
-            <div class="form-group">
-              <label>PRODUCT TITLE *</label>
-              <input type="text" class="form-control" [(ngModel)]="itemForm.name" name="name" required />
-            </div>
-
-            <div class="form-group">
-              <label>DESCRIPTION & SPECIFICATIONS *</label>
-              <textarea class="form-control" rows="2" [(ngModel)]="itemForm.description" name="description" required></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>PRICE (USD) *</label>
-              <input type="number" step="0.01" class="form-control" [(ngModel)]="itemForm.price" name="price" required />
-            </div>
-
-            <div class="form-group image-upload-section">
-              <label>PRODUCT IMAGE (UPLOAD OR URL) (OPTIONAL)</label>
-              
-              <div class="upload-controls">
-                <input 
-                  type="file" 
-                  id="imageFileInput" 
-                  class="file-input-hidden" 
-                  accept="image/png, image/jpeg, image/webp, image/gif"
-                  (change)="onImageFileSelected($event)" />
-                
-                <label for="imageFileInput" class="btn btn-sm btn-upload">
-                  UPLOAD LOCAL IMAGE FILE
-                </label>
-
-                @if (uploadingImage()) {
-                  <span class="uploading-text">Uploading image...</span>
-                }
-              </div>
-
-              @if (imagePreview() || itemForm.image) {
-                <div class="image-preview-box">
-                  <img [src]="imagePreview() || itemForm.image" alt="Preview" class="preview-img" />
-                  <span class="preview-caption">{{ itemForm.image }}</span>
-                </div>
-              }
-
-              <div class="url-fallback">
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Or enter image URL (https://... or /uploads/...)"
-                  [(ngModel)]="itemForm.image" 
-                  name="image" />
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn" (click)="showItemModal.set(false)">CANCEL</button>
-              <button type="submit" class="btn btn-primary">SAVE PRODUCT</button>
-            </div>
-          </form>
-        </div>
       </div>
     </div>
   }
