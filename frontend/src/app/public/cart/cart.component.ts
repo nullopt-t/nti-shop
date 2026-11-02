@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
+import { LanguageService } from '../../core/services/language.service';
 
 @Component({
   selector: 'app-cart',
@@ -12,6 +13,7 @@ import { CartService } from '../../core/services/cart.service';
 })
 export class CartComponent {
   readonly cartService = inject(CartService);
+  readonly langService = inject(LanguageService);
 
   increase(itemId: string, currentQty: number): void {
     this.cartService.updateQuantity(itemId, currentQty + 1);

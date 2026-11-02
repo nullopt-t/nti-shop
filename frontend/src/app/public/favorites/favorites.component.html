@@ -1,23 +1,25 @@
 <div class="board-container">
   <div class="wishlist-header">
-    <h1 class="wishlist-title">SAVED PIECES</h1>
-    <span class="wishlist-count">{{ favoritesService.count() }} {{ favoritesService.count() === 1 ? 'ITEM' : 'ITEMS' }}</span>
+    <h1 class="wishlist-title">{{ langService.t().savedPiecesTitle }}</h1>
+    <span class="wishlist-count">
+      {{ favoritesService.count() }} {{ favoritesService.count() === 1 ? langService.t().itemCountWord : langService.t().itemsCountWord }}
+    </span>
   </div>
 
   @if (favoritesService.favorites().length === 0) {
     <div class="empty-state-card">
-      <p>Your saved wishlist is currently empty.</p>
-      <a routerLink="/" class="btn btn-primary">EXPLORE THE COLLECTION</a>
+      <p>{{ langService.t().emptyWishlistMsg }}</p>
+      <a routerLink="/" class="btn btn-primary">{{ langService.t().exploreCollection }}</a>
     </div>
   } @else {
     <div class="board-panel">
       <table class="board-table">
         <thead>
           <tr>
-            <th style="width: 80px;">ITEM</th>
-            <th>DESCRIPTION</th>
-            <th style="width: 120px;">PRICE</th>
-            <th style="width: 200px; text-align: right;">ACTIONS</th>
+            <th style="width: 80px;">{{ langService.t().itemCol }}</th>
+            <th>{{ langService.t().descCol }}</th>
+            <th style="width: 120px;">{{ langService.t().priceCol }}</th>
+            <th style="width: 200px; text-align: right;">{{ langService.t().actions }}</th>
           </tr>
         </thead>
         <tbody>
@@ -25,23 +27,25 @@
             <tr>
               <td>
                 @if (item.image) {
-                  <img [src]="item.image" [alt]="item.name" class="wishlist-thumb" />
+                  <img [src]="item.image" [alt]="favoritesService.getItemLocalizedName(item, langService.currentLanguage())" class="wishlist-thumb" />
                 } @else {
                   <div class="wishlist-thumb thumb-placeholder">
-                    <span>{{ item.name }}</span>
+                    <span>{{ favoritesService.getItemLocalizedName(item, langService.currentLanguage()) }}</span>
                   </div>
                 }
               </td>
               <td>
                 <a [routerLink]="['/items', item._id]" class="wishlist-name">
-                  {{ item.name }}
+                  {{ favoritesService.getItemLocalizedName(item, langService.currentLanguage()) }}
                 </a>
-                <p class="wishlist-desc">{{ item.description }}</p>
+                <p class="wishlist-desc">
+                  {{ favoritesService.getItemLocalizedDescription(item, langService.currentLanguage()) }}
+                </p>
               </td>
               <td class="price-tag">${{ item.price.toFixed(2) }}</td>
               <td style="text-align: right;">
                 <button class="btn btn-sm btn-primary" (click)="addToCart(item)" style="margin-right: 8px;">
-                  + ADD TO BAG
+                  {{ langService.t().addToBag }}
                 </button>
                 <button class="btn btn-sm btn-danger" (click)="remove(item._id)" title="Remove">
                   ✕

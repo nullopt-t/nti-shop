@@ -1,17 +1,17 @@
 <div class="board-container">
   <div class="nav-breadcrumbs">
-    <a routerLink="/" class="back-link">← BACK TO COLLECTION</a>
+    <a routerLink="/" class="back-link">{{ langService.t().backToCollection }}</a>
   </div>
 
   @if (loading()) {
     <div class="state-container">
       <div class="spinner"></div>
-      <p>FETCHING PRODUCT SPECIFICATIONS...</p>
+      <p>{{ langService.t().fetchingSpecs }}</p>
     </div>
   } @else if (error()) {
     <div class="state-container error">
       <p>{{ error() }}</p>
-      <a routerLink="/" class="btn btn-primary btn-sm">RETURN TO SHOP</a>
+      <a routerLink="/" class="btn btn-primary btn-sm">{{ langService.t().backToCollection }}</a>
     </div>
   } @else if (item(); as itm) {
     <div class="detail-grid">
@@ -37,13 +37,13 @@
         </div>
 
         <div class="product-editorial">
-          <h4 class="editorial-title">ABOUT THIS PIECE</h4>
+          <h4 class="editorial-title">{{ langService.t().aboutThisPiece }}</h4>
           <p class="editorial-text">{{ itm.description }}</p>
         </div>
 
         <div class="purchase-controls">
           <div class="quantity-block">
-            <span class="control-label">QUANTITY</span>
+            <span class="control-label">{{ langService.t().quantityLabel }}</span>
             <div class="quantity-stepper">
               <button type="button" class="stepper-btn" (click)="decreaseQty()">−</button>
               <span class="stepper-value">{{ quantity() }}</span>
@@ -53,30 +53,30 @@
 
           <div class="cta-stack">
             <button class="btn btn-primary btn-lg btn-block" (click)="addToCart()">
-              ADD TO BAG • ${{ (itm.price * quantity()).toFixed(2) }}
+              {{ langService.t().addToBag }} • ${{ (itm.price * quantity()).toFixed(2) }}
             </button>
 
             <button 
               class="btn btn-outline btn-block"
               [class.is-fav]="favoritesService.isFavorite(itm._id)"
               (click)="toggleFavorite()">
-              {{ favoritesService.isFavorite(itm._id) ? '★ SAVED IN WISHLIST' : '☆ SAVE TO WISHLIST' }}
+              {{ favoritesService.isFavorite(itm._id) ? langService.t().savedInWishlist : langService.t().saveToWishlist }}
             </button>
           </div>
 
           @if (addedNotification()) {
             <div class="feedback-toast">
-              ✓ Added {{ quantity() }} item(s) to your bag.
+              ✓ {{ langService.t().addedToast }}
             </div>
           }
 
           <div class="concierge-card">
             <div class="concierge-header">
               <span class="icon">✦</span>
-              <span class="title">CONCIERGE DELIVERY & FIT CHECK</span>
+              <span class="title">{{ langService.t().conciergeTitle }}</span>
             </div>
             <p class="concierge-desc">
-              All orders are confirmed directly via telephone prior to courier dispatch. Our team verifies exact measurements and coordinates delivery at your convenience.
+              {{ langService.t().conciergeDesc }}
             </p>
           </div>
         </div>

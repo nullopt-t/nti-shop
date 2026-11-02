@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { CartService } from '../../core/services/cart.service';
+import { LanguageService } from '../../core/services/language.service';
 import { Order, CreateOrderPayload, PaymentMethodType } from '../../core/models/order.model';
 
 @Component({
@@ -18,6 +19,7 @@ export class CheckoutComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   readonly cartService = inject(CartService);
+  readonly langService = inject(LanguageService);
 
   paymentMethod: PaymentMethodType = 'cod';
   readonly availableMethods = signal<PaymentMethodType[]>(['cod', 'stripe']);

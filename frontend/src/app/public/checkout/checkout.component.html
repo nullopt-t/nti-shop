@@ -2,32 +2,32 @@
   @if (paymentReturnNotice(); as notice) {
     <!-- Gateway Return Screen -->
     <div class="confirmation-container">
-      <div class="confirmation-badge">✓ PAYMENT RECEIVED</div>
-      <h1 class="confirmation-title">TRANSACTION COMPLETED</h1>
+      <div class="confirmation-badge">{{ langService.t().paymentReceivedBadge }}</div>
+      <h1 class="confirmation-title">{{ langService.t().transactionCompletedTitle }}</h1>
       <p class="confirmation-subtitle">
         {{ notice }}
       </p>
       <div class="confirmation-actions">
-        <a routerLink="/" class="btn btn-primary">RETURN TO SHOP</a>
+        <a routerLink="/" class="btn btn-primary">{{ langService.t().backToCollection }}</a>
       </div>
     </div>
   } @else if (completedOrder(); as ord) {
     <!-- Order Confirmation Receipt Screen -->
     <div class="confirmation-container">
-      <div class="confirmation-badge">✓ ORDER RECEIVED</div>
-      <h1 class="confirmation-title">THANK YOU, {{ ord.userDetails.name.toUpperCase() }}</h1>
+      <div class="confirmation-badge">{{ langService.t().orderReceivedBadge }}</div>
+      <h1 class="confirmation-title">{{ langService.t().thankYouCustomer }}, {{ ord.userDetails.name.toUpperCase() }}</h1>
       <p class="confirmation-subtitle">
-        Your order reference is <strong>#{{ ord._id }}</strong>. 
+        {{ langService.t().orderRefText }} <strong>#{{ ord._id }}</strong>. 
         @if (ord.paymentMethod === 'cod') {
-          A ROCK client specialist will contact you directly at <strong>{{ ord.userDetails.phone }}</strong> to confirm sizing and coordinate delivery.
+          {{ langService.t().codFollowupMsg }}
         } @else {
-          Your online payment has been submitted. Our team is processing your shipment.
+          {{ langService.t().onlinePaymentMsg }}
         }
       </p>
 
       <div class="confirmation-grid">
         <div class="receipt-card">
-          <h4 class="card-label">DELIVERY / INQUIRY CONTACT</h4>
+          <h4 class="card-label">{{ langService.t().deliveryContactHeading }}</h4>
           <p class="data-val"><strong>{{ ord.userDetails.name }}</strong></p>
           <p class="data-val">{{ ord.userDetails.phone }}</p>
           <p class="data-val">{{ ord.userDetails.address }}</p>
@@ -36,13 +36,13 @@
           }
           <p class="data-val" style="margin-top: 8px;">
             <span class="badge" [class.badge-stripe]="ord.paymentMethod === 'stripe'">
-              {{ ord.paymentMethod === 'stripe' ? 'STRIPE CHECKOUT' : 'CASH ON DELIVERY' }}
+              {{ ord.paymentMethod === 'stripe' ? 'STRIPE' : 'CASH ON DELIVERY' }}
             </span>
           </p>
         </div>
 
         <div class="receipt-card">
-          <h4 class="card-label">ORDER SUMMARY</h4>
+          <h4 class="card-label">{{ langService.t().orderSummary }}</h4>
           <div class="receipt-items-list">
             @for (item of ord.items; track item.itemId) {
               <div class="receipt-item-row">
@@ -52,22 +52,22 @@
             }
           </div>
           <div class="receipt-total-row">
-            <span>{{ ord.paymentMethod === 'cod' ? 'TOTAL DUE ON DELIVERY' : 'TOTAL PAID' }}</span>
+            <span>{{ ord.paymentMethod === 'cod' ? langService.t().totalDueOnDelivery : langService.t().totalPaid }}</span>
             <span class="price-tag total-val">${{ ord.totalPrice.toFixed(2) }}</span>
           </div>
         </div>
       </div>
 
       <div class="confirmation-actions">
-        <a routerLink="/" class="btn btn-primary">RETURN TO SHOP</a>
+        <a routerLink="/" class="btn btn-primary">{{ langService.t().backToCollection }}</a>
       </div>
     </div>
   } @else {
     <!-- Checkout Form Screen -->
     <div class="checkout-wrapper">
       <div class="checkout-header">
-        <h1>EXPRESS CHECKOUT</h1>
-        <p>Choose your preferred payment method and finalize your pieces.</p>
+        <h1>{{ langService.t().expressCheckoutTitle }}</h1>
+        <p>{{ langService.t().checkoutSubtitle }}</p>
       </div>
 
       <div class="checkout-grid">
@@ -79,7 +79,7 @@
               @if (msg.includes('not found') || msg.includes('Invalid item')) {
                 <div style="margin-top: 10px;">
                   <button type="button" class="btn btn-sm" (click)="resetOutdatedBag()">
-                    CLEAR OUTDATED BAG & RETURN TO SHOP
+                    {{ langService.t().clearBag }}
                   </button>
                 </div>
               }
@@ -88,7 +88,7 @@
 
           <!-- Payment Method Selector -->
           <div class="payment-selector-group">
-            <label class="selector-label">PAYMENT METHOD</label>
+            <label class="selector-label">{{ langService.t().choosePaymentMethod }}</label>
             <div class="payment-tabs">
               @if (isMethodAvailable('cod')) {
                 <button 
@@ -103,8 +103,8 @@
                       <path d="M6 12h.01M18 12h.01"></path>
                     </svg>
                   </span>
-                  <span class="payment-name">Cash on Delivery</span>
-                  <span class="payment-desc">Pay upon courier delivery</span>
+                  <span class="payment-name">{{ langService.t().codOption }}</span>
+                  <span class="payment-desc">{{ langService.t().codDisclaimer }}</span>
                 </button>
               }
 
@@ -120,8 +120,8 @@
                       <line x1="1" y1="10" x2="23" y2="10"></line>
                     </svg>
                   </span>
-                  <span class="payment-name">Stripe Gateway</span>
-                  <span class="payment-desc">Credit / Debit Card (Global)</span>
+                  <span class="payment-name">{{ langService.t().stripeCardOption }}</span>
+                  <span class="payment-desc">Global Stripe Gateway</span>
                 </button>
               }
             </div>
@@ -131,12 +131,12 @@
             <!-- Contact info section -->
             <div class="contact-section">
               <div class="section-title">
-                {{ paymentMethod === 'cod' ? 'DELIVERY & VERIFICATION CONTACT' : 'CLIENT CONTACT & RECEIPT' }}
+                {{ langService.t().deliveryContactHeading }}
               </div>
 
               <div class="form-group">
                 <label for="name">
-                  CLIENT NAME {{ paymentMethod === 'cod' ? '*' : '(OPTIONAL)' }}
+                  {{ langService.t().fullNameLabel }}
                 </label>
                 <input 
                   id="name" 
@@ -150,7 +150,7 @@
 
               <div class="form-group">
                 <label for="phone">
-                  TELEPHONE NUMBER {{ paymentMethod === 'cod' ? '*' : '(OPTIONAL)' }}
+                  {{ langService.t().phoneLabel }}
                 </label>
                 <input 
                   id="phone" 
@@ -160,14 +160,11 @@
                   [(ngModel)]="phone" 
                   name="phone" 
                   [required]="paymentMethod === 'cod'" />
-                <small class="field-hint">
-                  {{ paymentMethod === 'cod' ? 'Required: our team calls to verify sizing & dispatch.' : 'Used as fallback for support inquiries.' }}
-                </small>
               </div>
 
               @if (paymentMethod !== 'cod') {
                 <div class="form-group">
-                  <label for="email">EMAIL ADDRESS (RECOMMENDED FOR RECEIPT)</label>
+                  <label for="email">{{ langService.t().emailLabel }}</label>
                   <input 
                     id="email" 
                     type="email" 
@@ -180,7 +177,7 @@
 
               @if (paymentMethod === 'cod') {
                 <div class="form-group">
-                  <label for="address">DELIVERY ADDRESS *</label>
+                  <label for="address">{{ langService.t().addressLabel }}</label>
                   <textarea 
                     id="address" 
                     class="form-control" 
@@ -195,13 +192,8 @@
 
             @if (paymentMethod === 'cod') {
               <div class="fulfillment-assurance-box">
-                <div class="assurance-title">✦ CONCIERGE PHONE CONFIRMATION</div>
-                <p>No upfront payment. Sizing and delivery scheduling are confirmed via telephone. Payment is settled at delivery handover.</p>
-              </div>
-            } @else {
-              <div class="fulfillment-assurance-box gateway-box">
-                <div class="assurance-title">✦ SECURE STRIPE CHECKOUT</div>
-                <p>You will be directed to Stripe's encrypted checkout page. Payment verifies directly on completion with zero tunnel requirements.</p>
+                <div class="assurance-title">✦ {{ langService.t().conciergeTitle }}</div>
+                <p>{{ langService.t().conciergeDesc }}</p>
               </div>
             }
 
@@ -209,21 +201,25 @@
               type="submit" 
               class="btn btn-primary btn-lg btn-block"
               [disabled]="submitting() || cartService.items().length === 0">
-              {{ submitting() ? 'PROCESSING...' : (paymentMethod === 'stripe' ? 'PROCEED TO STRIPE • $' + cartService.total().toFixed(2) : 'CONFIRM ORDER • $' + cartService.total().toFixed(2)) }}
+              @if (submitting()) {
+                ...
+              } @else {
+                {{ paymentMethod === 'stripe' ? (langService.t().proceedToStripeBtn + ' • $' + cartService.total().toFixed(2)) : (langService.t().placeOrderCodBtn + ' • $' + cartService.total().toFixed(2)) }}
+              }
             </button>
           </form>
         </div>
 
         <!-- Sidebar Summary -->
         <div class="aside-summary-card">
-          <h3 class="aside-heading">YOUR SELECTION ({{ cartService.count() }})</h3>
+          <h3 class="aside-heading">{{ langService.t().orderSummary }} ({{ cartService.count() }})</h3>
 
           <div class="aside-items">
             @for (entry of cartService.items(); track entry.item._id) {
               <div class="aside-item">
                 <div class="aside-info">
-                  <span class="aside-name">{{ entry.item.name }}</span>
-                  <span class="aside-qty">Qty: {{ entry.quantity }} × ${{ entry.item.price.toFixed(2) }}</span>
+                  <span class="aside-name">{{ cartService.getItemLocalizedName(entry.item, langService.currentLanguage()) }}</span>
+                  <span class="aside-qty">{{ entry.quantity }} × ${{ entry.item.price.toFixed(2) }}</span>
                 </div>
                 <span class="price-tag">${{ (entry.item.price * entry.quantity).toFixed(2) }}</span>
               </div>
@@ -231,11 +227,11 @@
           </div>
 
           <div class="aside-total">
-            <span>TOTAL ESTIMATE</span>
+            <span>{{ langService.t().totalEstimate }}</span>
             <span class="price-tag total-val">${{ cartService.total().toFixed(2) }}</span>
           </div>
 
-          <a routerLink="/cart" class="btn btn-sm btn-block" style="margin-top: 16px;">EDIT BAG</a>
+          <a routerLink="/cart" class="btn btn-sm btn-block" style="margin-top: 16px;">{{ langService.t().bagNav }}</a>
         </div>
       </div>
     </div>

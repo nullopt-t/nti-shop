@@ -2,7 +2,87 @@ import { Injectable, signal, effect, computed } from '@angular/core';
 
 export type Language = 'en' | 'ar';
 
-export interface ManagerTranslations {
+export interface AppTranslations {
+  // Navigation
+  shopNav: string;
+  savedNav: string;
+  bagNav: string;
+
+  // Catalog page
+  refresh: string;
+  collectionsTitle: string;
+  categoryLabel: string;
+  allCollections: string;
+  loadingCollection: string;
+  reload: string;
+  noProductsCategory: string;
+  addToBag: string;
+  viewProduct: string;
+
+  // Cart page
+  shoppingBagTitle: string;
+  itemsCountWord: string;
+  itemCountWord: string;
+  emptyBagMsg: string;
+  discoverCollection: string;
+  itemCol: string;
+  descCol: string;
+  priceCol: string;
+  qtyCol: string;
+  totalCol: string;
+  clearBag: string;
+  continueShopping: string;
+  orderSummary: string;
+  subtotal: string;
+  courierShipping: string;
+  complimentary: string;
+  phoneVerification: string;
+  included: string;
+  totalEstimate: string;
+  continueToCheckout: string;
+  codDisclaimer: string;
+
+  // Item Detail page
+  backToCollection: string;
+  fetchingSpecs: string;
+  itemNotFound: string;
+  aboutThisPiece: string;
+  quantityLabel: string;
+  savedInWishlist: string;
+  saveToWishlist: string;
+  addedToast: string;
+  conciergeTitle: string;
+  conciergeDesc: string;
+
+  // Wishlist / Saved page
+  savedPiecesTitle: string;
+  emptyWishlistMsg: string;
+  exploreCollection: string;
+
+  // Checkout page
+  expressCheckoutTitle: string;
+  checkoutSubtitle: string;
+  orderReceivedBadge: string;
+  thankYouCustomer: string;
+  orderRefText: string;
+  codFollowupMsg: string;
+  onlinePaymentMsg: string;
+  paymentReceivedBadge: string;
+  transactionCompletedTitle: string;
+  deliveryContactHeading: string;
+  fullNameLabel: string;
+  phoneLabel: string;
+  addressLabel: string;
+  emailLabel: string;
+  choosePaymentMethod: string;
+  stripeCardOption: string;
+  codOption: string;
+  placeOrderCodBtn: string;
+  proceedToStripeBtn: string;
+  totalDueOnDelivery: string;
+  totalPaid: string;
+
+  // Manager console
   staffConsole: string;
   viewPublicShop: string;
   logout: string;
@@ -58,19 +138,14 @@ export interface ManagerTranslations {
   createItemBtn: string;
   cancel: string;
   confirmDelete: string;
-  refresh: string;
-  collectionsTitle: string;
-  categoryLabel: string;
-  allCollections: string;
-  loadingCollection: string;
-  reload: string;
-  noProductsCategory: string;
-  addToBag: string;
-  viewProduct: string;
 }
 
-const UI_DICTIONARY: Record<Language, ManagerTranslations> = {
+const UI_DICTIONARY: Record<Language, AppTranslations> = {
   en: {
+    shopNav: 'SHOP',
+    savedNav: 'SAVED',
+    bagNav: 'BAG',
+
     refresh: '↻ REFRESH',
     collectionsTitle: 'COLLECTIONS',
     categoryLabel: 'CATEGORY',
@@ -80,6 +155,66 @@ const UI_DICTIONARY: Record<Language, ManagerTranslations> = {
     noProductsCategory: 'No products currently available in this category.',
     addToBag: '+ ADD TO BAG',
     viewProduct: 'VIEW PRODUCT',
+
+    shoppingBagTitle: 'SHOPPING BAG',
+    itemsCountWord: 'ITEMS',
+    itemCountWord: 'ITEM',
+    emptyBagMsg: 'Your shopping bag is currently empty.',
+    discoverCollection: 'DISCOVER THE COLLECTION',
+    itemCol: 'ITEM',
+    descCol: 'DESCRIPTION',
+    priceCol: 'PRICE',
+    qtyCol: 'QUANTITY',
+    totalCol: 'TOTAL',
+    clearBag: 'CLEAR BAG',
+    continueShopping: 'CONTINUE SHOPPING',
+    orderSummary: 'ORDER SUMMARY',
+    subtotal: 'Subtotal',
+    courierShipping: 'Courier Shipping',
+    complimentary: 'COMPLIMENTARY',
+    phoneVerification: 'Phone Verification',
+    included: 'INCLUDED',
+    totalEstimate: 'TOTAL ESTIMATE',
+    continueToCheckout: 'CONTINUE TO CHECKOUT →',
+    codDisclaimer: 'Payment is collected upon delivery handover following telephone confirmation.',
+
+    backToCollection: '← BACK TO COLLECTION',
+    fetchingSpecs: 'FETCHING PRODUCT SPECIFICATIONS...',
+    itemNotFound: 'Product not found or failed to load.',
+    aboutThisPiece: 'ABOUT THIS PIECE',
+    quantityLabel: 'QUANTITY',
+    savedInWishlist: '★ SAVED IN WISHLIST',
+    saveToWishlist: '☆ SAVE TO WISHLIST',
+    addedToast: 'Added to your bag.',
+    conciergeTitle: 'CONCIERGE DELIVERY & FIT CHECK',
+    conciergeDesc: 'All orders are confirmed directly via telephone prior to courier dispatch. Our team verifies exact measurements and coordinates delivery at your convenience.',
+
+    savedPiecesTitle: 'SAVED PIECES',
+    emptyWishlistMsg: 'Your saved wishlist is currently empty.',
+    exploreCollection: 'EXPLORE THE COLLECTION',
+
+    expressCheckoutTitle: 'EXPRESS CHECKOUT',
+    checkoutSubtitle: 'Choose your preferred payment method and finalize your pieces.',
+    orderReceivedBadge: '✓ ORDER RECEIVED',
+    thankYouCustomer: 'THANK YOU',
+    orderRefText: 'Your order reference is',
+    codFollowupMsg: 'A ROCK client specialist will contact you directly to confirm sizing and coordinate delivery.',
+    onlinePaymentMsg: 'Your online payment has been submitted. Our team is processing your shipment.',
+    paymentReceivedBadge: '✓ PAYMENT RECEIVED',
+    transactionCompletedTitle: 'TRANSACTION COMPLETED',
+    deliveryContactHeading: 'DELIVERY / CONTACT INFORMATION',
+    fullNameLabel: 'Full Name *',
+    phoneLabel: 'Phone Number *',
+    addressLabel: 'Delivery Address *',
+    emailLabel: 'Email Address (Optional)',
+    choosePaymentMethod: 'PAYMENT METHOD',
+    stripeCardOption: 'Credit / Debit Card (Stripe)',
+    codOption: 'Cash on Delivery (Handover Verification)',
+    placeOrderCodBtn: 'CONFIRM CASH ON DELIVERY ORDER',
+    proceedToStripeBtn: 'PROCEED TO SECURE CARD PAYMENT →',
+    totalDueOnDelivery: 'TOTAL DUE ON DELIVERY',
+    totalPaid: 'TOTAL PAID',
+
     staffConsole: 'STAFF CONSOLE',
     viewPublicShop: '↗ VIEW PUBLIC SHOP',
     logout: 'LOGOUT',
@@ -137,6 +272,10 @@ const UI_DICTIONARY: Record<Language, ManagerTranslations> = {
     confirmDelete: 'Are you sure you want to delete this clothing item?',
   },
   ar: {
+    shopNav: 'المتجر',
+    savedNav: 'المفضلة',
+    bagNav: 'الحقيبة',
+
     refresh: '↻ تحديث',
     collectionsTitle: 'التشكيلات والتصنيفات',
     categoryLabel: 'التصنيف',
@@ -146,6 +285,66 @@ const UI_DICTIONARY: Record<Language, ManagerTranslations> = {
     noProductsCategory: 'لا توجد منتجات متوفرة حالياً في هذا التصنيف.',
     addToBag: '+ إضافة إلى الحقيبة',
     viewProduct: 'عرض المنتج',
+
+    shoppingBagTitle: 'حقيبة التسوق',
+    itemsCountWord: 'منتجات',
+    itemCountWord: 'منتج',
+    emptyBagMsg: 'حقيبة التسوق الخاصة بك فارغة حالياً.',
+    discoverCollection: 'استكشف التشكيلة الحصرية',
+    itemCol: 'المنتج',
+    descCol: 'الوصف والمواصفات',
+    priceCol: 'السعر',
+    qtyCol: 'الكمية',
+    totalCol: 'الإجمالي',
+    clearBag: 'تفريغ الحقيبة',
+    continueShopping: 'متابعة التسوق',
+    orderSummary: 'ملخص الطلب',
+    subtotal: 'المجموع الفرعي',
+    courierShipping: 'الشحن السريع',
+    complimentary: 'مجاني',
+    phoneVerification: 'التأكيد الهاتفي',
+    included: 'مشمول',
+    totalEstimate: 'الإجمالي التقديري',
+    continueToCheckout: 'الانتقال إلى إتمام الطلب ←',
+    codDisclaimer: 'يتم تحصيل المبلغ عند الاستلام يداً بيد بعد التأكيد الهاتفي ومراجعة المقاسات.',
+
+    backToCollection: '← العودة إلى التشكيلة',
+    fetchingSpecs: 'جاري جلب تفاصيل ومواصفات القطعة...',
+    itemNotFound: 'لم يتم العثور على المنتج أو تعذر تحميل البيانات.',
+    aboutThisPiece: 'عن هذه القطعة',
+    quantityLabel: 'الكمية',
+    savedInWishlist: '★ محفوظ في المفضلة',
+    saveToWishlist: '☆ حفظ في المفضلة',
+    addedToast: 'تمت إضافة القطعة إلى الحقيبة.',
+    conciergeTitle: 'خدمة التوصيل والتحقق من المقاس',
+    conciergeDesc: 'يتم تأكيد جميع الطلبات عبر الهاتف مباشرة قبل إرسال المندوب، للتحقق من المقاسات المناسبة وتحديد موعد التسليم الذي يناسبك.',
+
+    savedPiecesTitle: 'القطع المحفوظة',
+    emptyWishlistMsg: 'قائمة الرغبات والمحفوظات فارغة حالياً.',
+    exploreCollection: 'استكشف التشكيلة',
+
+    expressCheckoutTitle: 'إتمام الطلب السريع',
+    checkoutSubtitle: 'اختر طريقة الدفع المفضلة لديك وأكمل طلب القطع الفاخرة.',
+    orderReceivedBadge: '✓ تم استلام الطلب',
+    thankYouCustomer: 'شكراً لك',
+    orderRefText: 'رقم مرجع طلبك هو',
+    codFollowupMsg: 'سيتواصل معك أخصائي خدمة العملاء هاتفياً لتأكيد المقاسات والتنسيق للتوصيل.',
+    onlinePaymentMsg: 'تم تقديم الدفع الإلكتروني بنجاح وجاري تجهيز الشحنة.',
+    paymentReceivedBadge: '✓ تم استلام الدفع',
+    transactionCompletedTitle: 'اكتملت المعاملة بنجاح',
+    deliveryContactHeading: 'بيانات التواصل والتوصيل',
+    fullNameLabel: 'الاسم بالكامل *',
+    phoneLabel: 'رقم الهاتف *',
+    addressLabel: 'عنوان التوصيل *',
+    emailLabel: 'البريد الإلكتروني (اختياري)',
+    choosePaymentMethod: 'طريقة الدفع',
+    stripeCardOption: 'بطاقة ائتمان / بطاقة بنكية (Stripe)',
+    codOption: 'الدفع نقداً عند الاستلام (مع التحقق)',
+    placeOrderCodBtn: 'تأكيد الطلب والدفع عند الاستلام',
+    proceedToStripeBtn: 'المتابعة للدفع الإلكتروني الآمن ←',
+    totalDueOnDelivery: 'الإجمالي المطلوب عند الاستلام',
+    totalPaid: 'الإجمالي المدفوع',
+
     staffConsole: 'لوحة تحكم الإدارة',
     viewPublicShop: '↗ عرض المتجر للعملاء',
     logout: 'تسجيل خروج',
@@ -251,4 +450,3 @@ export class LanguageService {
     return 'en';
   }
 }
-

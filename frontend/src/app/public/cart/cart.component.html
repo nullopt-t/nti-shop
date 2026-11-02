@@ -1,13 +1,15 @@
 <div class="board-container">
   <div class="cart-header-row">
-    <h1 class="cart-title">SHOPPING BAG</h1>
-    <span class="bag-count">{{ cartService.count() }} {{ cartService.count() === 1 ? 'ITEM' : 'ITEMS' }}</span>
+    <h1 class="cart-title">{{ langService.t().shoppingBagTitle }}</h1>
+    <span class="bag-count">
+      {{ cartService.count() }} {{ cartService.count() === 1 ? langService.t().itemCountWord : langService.t().itemsCountWord }}
+    </span>
   </div>
 
   @if (cartService.items().length === 0) {
     <div class="empty-bag-card">
-      <p class="empty-text">Your shopping bag is currently empty.</p>
-      <a routerLink="/" class="btn btn-primary">DISCOVER THE COLLECTION</a>
+      <p class="empty-text">{{ langService.t().emptyBagMsg }}</p>
+      <a routerLink="/" class="btn btn-primary">{{ langService.t().discoverCollection }}</a>
     </div>
   } @else {
     <div class="cart-grid">
@@ -16,11 +18,11 @@
         <table class="board-table cart-table">
           <thead>
             <tr>
-              <th style="width: 80px;">ITEM</th>
-              <th>DESCRIPTION</th>
-              <th style="width: 110px;">PRICE</th>
-              <th style="width: 130px; text-align: center;">QUANTITY</th>
-              <th style="width: 110px; text-align: right;">TOTAL</th>
+              <th style="width: 80px;">{{ langService.t().itemCol }}</th>
+              <th>{{ langService.t().descCol }}</th>
+              <th style="width: 110px;">{{ langService.t().priceCol }}</th>
+              <th style="width: 130px; text-align: center;">{{ langService.t().qtyCol }}</th>
+              <th style="width: 110px; text-align: right;">{{ langService.t().totalCol }}</th>
               <th style="width: 60px; text-align: center;"></th>
             </tr>
           </thead>
@@ -29,18 +31,20 @@
               <tr>
                 <td>
                   @if (entry.item.image) {
-                    <img [src]="entry.item.image" [alt]="entry.item.name" class="cart-thumb" />
+                    <img [src]="entry.item.image" [alt]="cartService.getItemLocalizedName(entry.item, langService.currentLanguage())" class="cart-thumb" />
                   } @else {
                     <div class="cart-thumb thumb-placeholder">
-                      <span>{{ entry.item.name }}</span>
+                      <span>{{ cartService.getItemLocalizedName(entry.item, langService.currentLanguage()) }}</span>
                     </div>
                   }
                 </td>
                 <td>
                   <a [routerLink]="['/items', entry.item._id]" class="cart-product-title">
-                    {{ entry.item.name }}
+                    {{ cartService.getItemLocalizedName(entry.item, langService.currentLanguage()) }}
                   </a>
-                  <p class="cart-product-desc">{{ entry.item.description }}</p>
+                  <p class="cart-product-desc">
+                    {{ cartService.getItemLocalizedDescription(entry.item, langService.currentLanguage()) }}
+                  </p>
                 </td>
                 <td class="price-tag">${{ entry.item.price.toFixed(2) }}</td>
                 <td style="text-align: center;">
@@ -64,43 +68,43 @@
         </table>
 
         <div class="cart-actions-row">
-          <button class="btn btn-sm" (click)="clear()">CLEAR BAG</button>
-          <a routerLink="/" class="btn btn-sm">CONTINUE SHOPPING</a>
+          <button class="btn btn-sm" (click)="clear()">{{ langService.t().clearBag }}</button>
+          <a routerLink="/" class="btn btn-sm">{{ langService.t().continueShopping }}</a>
         </div>
       </div>
 
       <!-- Order Summary Card -->
       <div class="order-summary-card">
-        <h3 class="summary-heading">ORDER SUMMARY</h3>
+        <h3 class="summary-heading">{{ langService.t().orderSummary }}</h3>
 
         <div class="summary-line">
-          <span>Subtotal</span>
+          <span>{{ langService.t().subtotal }}</span>
           <span class="price-tag">${{ cartService.total().toFixed(2) }}</span>
         </div>
 
         <div class="summary-line">
-          <span>Courier Shipping</span>
-          <span class="shipping-tag">COMPLIMENTARY</span>
+          <span>{{ langService.t().courierShipping }}</span>
+          <span class="shipping-tag">{{ langService.t().complimentary }}</span>
         </div>
 
         <div class="summary-line">
-          <span>Phone Verification</span>
-          <span class="shipping-tag">INCLUDED</span>
+          <span>{{ langService.t().phoneVerification }}</span>
+          <span class="shipping-tag">{{ langService.t().included }}</span>
         </div>
 
         <div class="summary-total-line">
-          <span>TOTAL ESTIMATE</span>
+          <span>{{ langService.t().totalEstimate }}</span>
           <span class="total-price">${{ cartService.total().toFixed(2) }}</span>
         </div>
 
         <div class="summary-cta">
           <a routerLink="/checkout" class="btn btn-primary btn-lg btn-block">
-            CONTINUE TO CHECKOUT →
+            {{ langService.t().continueToCheckout }}
           </a>
         </div>
 
         <p class="summary-disclaimer">
-          Payment is collected upon delivery handover following telephone confirmation.
+          {{ langService.t().codDisclaimer }}
         </p>
       </div>
     </div>

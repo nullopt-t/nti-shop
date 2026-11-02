@@ -35,6 +35,20 @@ export class FavoritesService {
     }
   }
 
+  getItemLocalizedName(item: Item, lang: string): string {
+    if (lang !== 'en' && item.translations?.[lang]?.name) {
+      return item.translations[lang].name!;
+    }
+    return item.name;
+  }
+
+  getItemLocalizedDescription(item: Item, lang: string): string {
+    if (lang !== 'en' && item.translations?.[lang]?.description) {
+      return item.translations[lang].description!;
+    }
+    return item.description;
+  }
+
   isFavorite(itemId: string): boolean {
     return this.favorites().some((i) => i._id === itemId);
   }

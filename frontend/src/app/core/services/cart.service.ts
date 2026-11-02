@@ -53,7 +53,7 @@ export class CartService {
     if (existingIndex > -1) {
       updated = [...current];
       updated[existingIndex] = {
-        ...updated[existingIndex],
+        item: { ...updated[existingIndex].item, ...item },
         quantity: updated[existingIndex].quantity + quantity,
       };
     } else {
@@ -62,6 +62,27 @@ export class CartService {
 
     this.items.set(updated);
     this.saveToStorage(updated);
+  }
+
+  getItemLocalizedName(item: Item, lang: string): string {
+    if (lang !== 'en' && item.translations?.[lang]?.name) {
+      return item.translations[lang].name!;
+    }
+    return item.name;
+  }
+
+  getItemLocalizedDescription(item: Item, lang: string): string {
+    if (lang !== 'en' && item.translations?.[lang]?.description) {
+      return item.translations[lang].description!;
+    }
+    return item.description;
+  }
+
+  getItemLocalizedCategory(item: Item, lang: string): string {
+    if (lang !== 'en' && item.translations?.[lang]?.category) {
+      return item.translations[lang].category!;
+    }
+    return item.category;
   }
 
   updateQuantity(itemId: string, quantity: number): void {
