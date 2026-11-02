@@ -81,6 +81,8 @@ export interface AppTranslations {
   proceedToStripeBtn: string;
   totalDueOnDelivery: string;
   totalPaid: string;
+  redirectingToGateway: string;
+  verifyingPaymentMsg: string;
 
   // Manager console
   staffConsole: string;
@@ -214,6 +216,8 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     proceedToStripeBtn: 'PROCEED TO SECURE CARD PAYMENT →',
     totalDueOnDelivery: 'TOTAL DUE ON DELIVERY',
     totalPaid: 'TOTAL PAID',
+    redirectingToGateway: 'Redirecting to secure payment gateway...',
+    verifyingPaymentMsg: 'Verifying payment status, please wait...',
 
     staffConsole: 'STAFF CONSOLE',
     viewPublicShop: '↗ VIEW PUBLIC SHOP',
@@ -344,6 +348,8 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     proceedToStripeBtn: 'المتابعة للدفع الإلكتروني الآمن ←',
     totalDueOnDelivery: 'الإجمالي المطلوب عند الاستلام',
     totalPaid: 'الإجمالي المدفوع',
+    redirectingToGateway: 'جاري تحويلك إلى بوابة الدفع الآمنة...',
+    verifyingPaymentMsg: 'جاري التحقق من حالة الدفع، يرجى الانتظار...',
 
     staffConsole: 'لوحة تحكم الإدارة',
     viewPublicShop: '↗ عرض المتجر للعملاء',

@@ -1,5 +1,17 @@
 <div class="board-container">
-  @if (paymentReturnNotice(); as notice) {
+  @if (verifyingPayment()) {
+    <!-- Return from Gateway Loading State -->
+    <div class="confirmation-container">
+      <div class="spinner" style="margin: 32px auto 16px; width: 44px; height: 44px; border: 3px solid rgba(0,0,0,0.1); border-top-color: #090a0f; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+      <h2 class="confirmation-title">{{ langService.t().verifyingPaymentMsg }}</h2>
+    </div>
+  } @else if (redirecting()) {
+    <!-- Redirecting State -->
+    <div class="confirmation-container">
+      <div class="spinner" style="margin: 32px auto 16px; width: 44px; height: 44px; border: 3px solid rgba(0,0,0,0.1); border-top-color: #090a0f; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+      <h2 class="confirmation-title">{{ langService.t().redirectingToGateway }}</h2>
+    </div>
+  } @else if (paymentReturnNotice(); as notice) {
     <!-- Gateway Return Screen -->
     <div class="confirmation-container">
       <div class="confirmation-badge">{{ langService.t().paymentReceivedBadge }}</div>

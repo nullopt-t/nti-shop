@@ -29,6 +29,8 @@ export class CheckoutComponent implements OnInit {
   email = '';
 
   readonly submitting = signal<boolean>(false);
+  readonly verifyingPayment = signal<boolean>(false);
+  readonly redirecting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
   readonly completedOrder = signal<Order | null>(null);
   readonly paymentReturnNotice = signal<string | null>(null);
@@ -64,11 +66,13 @@ export class CheckoutComponent implements OnInit {
     }
 
     if (orderId) {
+      this.verifyingPayment.set(true);
       const isSuccessParam = params['success'] === 'true' || Boolean(sessionId);
       const isPendingParam = params['pending'] === 'true';
       const isFailedParam = params['success'] === 'false';
 
       if (isFailedParam) {
+        this.verifyingPayment.set(false);
         this.errorMessage.set('Payment was declined or cancelled at the gateway. Please retry or choose Cash on Delivery.');
         return;
       }
@@ -76,6 +80,7 @@ export class CheckoutComponent implements OnInit {
       // Verify status directly from server database (with direct Stripe session retrieval if session_id is provided)
       this.api.getOrderStatus(orderId, sessionId).subscribe({
         next: (res) => {
+          this.verifyingPayment.set(false);
           this.cartService.clearCart();
           const ord = res.data;
 
@@ -94,6 +99,7 @@ export class CheckoutComponent implements OnInit {
           }
         },
         error: () => {
+          this.verifyingPayment.set(false);
           if (isSuccessParam) {
             this.cartService.clearCart();
             this.paymentReturnNotice.set(
@@ -154,15 +160,14 @@ export class CheckoutComponent implements OnInit {
 
     this.api.submitOrder(payload).subscribe({
       next: (res) => {
-        this.submitting.set(false);
-
         // Redirect to gateway if checkoutUrl is returned
         if (this.paymentMethod === 'stripe' && res.checkoutUrl) {
-          this.cartService.clearCart();
+          this.redirecting.set(true);
           window.location.href = res.checkoutUrl;
           return;
         }
 
+        this.submitting.set(false);
         this.completedOrder.set(res.data);
         this.cartService.clearCart();
       },
