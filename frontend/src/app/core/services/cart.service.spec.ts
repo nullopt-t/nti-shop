@@ -14,14 +14,18 @@ describe('CartService', () => {
   };
 
   beforeEach(() => {
-    localStorage.clear();
+    if (typeof localStorage !== 'undefined' && localStorage.clear) {
+      localStorage.clear();
+    }
     TestBed.configureTestingModule({});
     service = TestBed.inject(CartService);
     service.clearCart();
   });
 
   afterEach(() => {
-    localStorage.clear();
+    if (typeof localStorage !== 'undefined' && localStorage.clear) {
+      localStorage.clear();
+    }
   });
 
   it('should initialize with empty cart', () => {

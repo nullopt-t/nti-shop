@@ -14,13 +14,17 @@ describe('FavoritesService', () => {
   };
 
   beforeEach(() => {
-    localStorage.clear();
+    if (typeof localStorage !== 'undefined' && localStorage.clear) {
+      localStorage.clear();
+    }
     TestBed.configureTestingModule({});
     service = TestBed.inject(FavoritesService);
   });
 
   afterEach(() => {
-    localStorage.clear();
+    if (typeof localStorage !== 'undefined' && localStorage.clear) {
+      localStorage.clear();
+    }
   });
 
   it('should toggle favorite status on and off', () => {

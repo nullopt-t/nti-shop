@@ -114,13 +114,24 @@ export class ManagerItemFormComponent implements OnInit {
         this.itemForm.image = res.imageUrl;
         this.imagePreview.set(res.imageUrl);
         this.uploadingImage.set(false);
+        input.value = '';
         this.notify('Image uploaded successfully.');
       },
       error: (err) => {
         this.uploadingImage.set(false);
+        input.value = '';
         this.notify(err.error?.message || 'Failed to upload image', 'error');
       },
     });
+  }
+
+  onImageUrlChange(newUrl: string): void {
+    this.imagePreview.set(newUrl && newUrl.trim() ? newUrl.trim() : null);
+  }
+
+  clearImage(): void {
+    this.itemForm.image = '';
+    this.imagePreview.set(null);
   }
 
   saveProduct(): void {

@@ -112,14 +112,16 @@
               class="file-input"
               id="fileUpload"
             />
-            <label for="fileUpload" class="file-label">
-              {{ uploadingImage() ? langService.t().uploading : 'UPLOAD IMAGE FILE' }}
+            <label for="fileUpload" class="file-label" [class.uploading]="uploadingImage()">
+              <span class="icon">📷</span>
+              {{ uploadingImage() ? langService.t().uploading : langService.t().uploadImageBtn }}
             </label>
             <input
               type="url"
               [(ngModel)]="itemForm.image"
+              (ngModelChange)="onImageUrlChange($event)"
               name="image"
-              placeholder="Or paste external image URL..."
+              [placeholder]="langService.t().pasteUrlPlaceholder"
               class="input-control"
             />
           </div>
@@ -127,6 +129,7 @@
           @if (imagePreview() || itemForm.image) {
             <div class="preview-box">
               <img [src]="imagePreview() || itemForm.image" alt="Product Preview" class="preview-img" />
+              <button type="button" class="btn-remove-preview" (click)="clearImage()" title="Remove Image">✕</button>
             </div>
           }
         </div>

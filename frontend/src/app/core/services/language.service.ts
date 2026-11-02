@@ -140,6 +140,8 @@ export interface AppTranslations {
   itemDescAr: string;
   productImage: string;
   uploading: string;
+  uploadImageBtn: string;
+  pasteUrlPlaceholder: string;
   saveChanges: string;
   createItemBtn: string;
   cancel: string;
@@ -279,6 +281,8 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     itemDescAr: 'Description (العربية)',
     productImage: 'Product Image',
     uploading: 'Uploading image...',
+    uploadImageBtn: 'UPLOAD IMAGE FILE',
+    pasteUrlPlaceholder: 'Or paste image URL...',
     saveChanges: 'Save Changes',
     createItemBtn: 'Create Product',
     cancel: 'Cancel',
@@ -416,6 +420,8 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     itemDescAr: 'الوصف (بالعربية)',
     productImage: 'صورة المنتج',
     uploading: 'جاري رفع الصورة...',
+    uploadImageBtn: 'رفع ملف صورة محلي',
+    pasteUrlPlaceholder: 'أو الصق رابط الصورة...',
     saveChanges: 'حفظ التعديلات',
     createItemBtn: 'إنشاء المنتج',
     cancel: 'إلغاء',
