@@ -154,7 +154,7 @@ export class CheckoutComponent implements OnInit {
         this.submitting.set(false);
 
         // Redirect to gateway if checkoutUrl is returned
-        if ((this.paymentMethod === 'paymob' || this.paymentMethod === 'stripe') && res.checkoutUrl) {
+        if (this.paymentMethod === 'stripe' && res.checkoutUrl) {
           this.cartService.clearCart();
           window.location.href = res.checkoutUrl;
           return;

@@ -35,8 +35,8 @@
             <p class="data-val">{{ ord.userDetails.email }}</p>
           }
           <p class="data-val" style="margin-top: 8px;">
-            <span class="badge" [class.badge-stripe]="ord.paymentMethod === 'stripe'" [class.badge-paymob]="ord.paymentMethod === 'paymob'">
-              {{ ord.paymentMethod === 'stripe' ? 'STRIPE CHECKOUT' : (ord.paymentMethod === 'paymob' ? 'PAYMOB GATEWAY' : 'CASH ON DELIVERY') }}
+            <span class="badge" [class.badge-stripe]="ord.paymentMethod === 'stripe'">
+              {{ ord.paymentMethod === 'stripe' ? 'STRIPE CHECKOUT' : 'CASH ON DELIVERY' }}
             </span>
           </p>
         </div>
@@ -124,23 +124,6 @@
                   <span class="payment-desc">Credit / Debit Card (Global)</span>
                 </button>
               }
-
-              @if (isMethodAvailable('paymob')) {
-                <button 
-                  type="button" 
-                  class="payment-option-btn" 
-                  [class.active]="paymentMethod === 'paymob'"
-                  (click)="setPaymentMethod('paymob')">
-                  <span class="payment-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"></path>
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                    </svg>
-                  </span>
-                  <span class="payment-name">Paymob Gateway</span>
-                  <span class="payment-desc">Cards, Wallets & EGP</span>
-                </button>
-              }
             </div>
           </div>
 
@@ -215,15 +198,10 @@
                 <div class="assurance-title">✦ CONCIERGE PHONE CONFIRMATION</div>
                 <p>No upfront payment. Sizing and delivery scheduling are confirmed via telephone. Payment is settled at delivery handover.</p>
               </div>
-            } @else if (paymentMethod === 'stripe') {
+            } @else {
               <div class="fulfillment-assurance-box gateway-box">
                 <div class="assurance-title">✦ SECURE STRIPE CHECKOUT</div>
                 <p>You will be directed to Stripe's encrypted checkout page. Payment verifies directly on completion with zero tunnel requirements.</p>
-              </div>
-            } @else {
-              <div class="fulfillment-assurance-box gateway-box">
-                <div class="assurance-title">✦ SECURE PAYMOB REDIRECT</div>
-                <p>You will be directed to Paymob's official payment page to securely enter card or wallet details. No card information is stored on our servers.</p>
               </div>
             }
 
@@ -231,7 +209,7 @@
               type="submit" 
               class="btn btn-primary btn-lg btn-block"
               [disabled]="submitting() || cartService.items().length === 0">
-              {{ submitting() ? 'PROCESSING...' : (paymentMethod === 'stripe' ? 'PROCEED TO STRIPE • $' + cartService.total().toFixed(2) : (paymentMethod === 'paymob' ? 'PROCEED TO PAYMOB • $' + cartService.total().toFixed(2) : 'CONFIRM ORDER • $' + cartService.total().toFixed(2))) }}
+              {{ submitting() ? 'PROCESSING...' : (paymentMethod === 'stripe' ? 'PROCEED TO STRIPE • $' + cartService.total().toFixed(2) : 'CONFIRM ORDER • $' + cartService.total().toFixed(2)) }}
             </button>
           </form>
         </div>

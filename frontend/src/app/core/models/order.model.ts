@@ -13,20 +13,13 @@ export interface UserDetails {
   email?: string;
 }
 
-export interface PaymobDetails {
-  intentionId?: string;
-  clientSecret?: string;
-  paymobOrderId?: string;
-  transactionId?: string;
-}
-
 export interface StripeDetails {
   sessionId?: string;
   paymentIntentId?: string;
   customerEmail?: string;
 }
 
-export type PaymentMethodType = 'cod' | 'paymob' | 'stripe';
+export type PaymentMethodType = 'cod' | 'stripe';
 
 export interface OrderNote {
   time: string;
@@ -40,7 +33,6 @@ export interface Order {
   totalPrice: number;
   paymentMethod: PaymentMethodType;
   paymentStatus: 'pending' | 'paid' | 'failed';
-  paymobDetails?: PaymobDetails;
   stripeDetails?: StripeDetails;
   status: 'opened' | 'closed';
   notes?: OrderNote[];
