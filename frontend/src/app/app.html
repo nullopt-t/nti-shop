@@ -10,14 +10,10 @@
       </div>
 
       <div class="manager-header-actions">
-        <button
-          type="button"
-          class="btn-lang-toggle"
-          (click)="langService.toggleLanguage()"
-          [title]="langService.currentLanguage() === 'en' ? 'التبديل إلى العربية' : 'Switch to English'"
-        >
-          {{ langService.currentLanguage() === 'en' ? 'AR' : 'EN' }}
-        </button>
+        <div class="lang-switcher-pill" (click)="langService.toggleLanguage()" [title]="langService.currentLanguage() === 'en' ? 'التبديل إلى العربية' : 'Switch to English'">
+          <span class="lang-opt" [class.active]="langService.currentLanguage() === 'en'">EN</span>
+          <span class="lang-opt" [class.active]="langService.currentLanguage() === 'ar'">عربي</span>
+        </div>
 
         @if (authService.isAuthenticated()) {
           <a routerLink="/" class="btn-shop-preview" title="View Public Storefront">
