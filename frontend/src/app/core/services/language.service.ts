@@ -147,6 +147,23 @@ export interface AppTranslations {
   createItemBtn: string;
   cancel: string;
   confirmDelete: string;
+  // Toasts
+  toastOrderUpdated: (id: string, status: string) => string;
+  toastOrderUpdateFailed: string;
+  toastNoteEmpty: string;
+  toastNoteSaved: string;
+  toastNoteFailed: string;
+  toastItemDeleted: string;
+  toastItemDeleteFailed: string;
+  toastLoadItemFailed: string;
+  toastImageUploaded: string;
+  toastImageUploadFailed: string;
+  toastFillRequiredEnFields: string;
+  toastInvalidPrice: string;
+  toastItemUpdated: string;
+  toastItemUpdateFailed: string;
+  toastItemCreated: string;
+  toastItemCreateFailed: string;
 }
 
 const UI_DICTIONARY: Record<Language, AppTranslations> = {
@@ -289,6 +306,22 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     createItemBtn: 'Create Product',
     cancel: 'Cancel',
     confirmDelete: 'Are you sure you want to delete this clothing item?',
+    toastOrderUpdated: (id: string, status: string) => `Order #${id} status updated to ${status}.`,
+    toastOrderUpdateFailed: 'Failed to update order status.',
+    toastNoteEmpty: 'Please enter a note before adding to log.',
+    toastNoteSaved: 'New log entry recorded.',
+    toastNoteFailed: 'Failed to save log entry.',
+    toastItemDeleted: 'Item removed from catalog.',
+    toastItemDeleteFailed: 'Failed to delete item.',
+    toastLoadItemFailed: 'Failed to load product details.',
+    toastImageUploaded: 'Image uploaded successfully.',
+    toastImageUploadFailed: 'Failed to upload image.',
+    toastFillRequiredEnFields: 'Please fill all required English fields (name, category, description)',
+    toastInvalidPrice: 'Price must be greater than or equal to zero',
+    toastItemUpdated: 'Product and translations updated successfully.',
+    toastItemUpdateFailed: 'Failed to update product.',
+    toastItemCreated: 'New product and translations created.',
+    toastItemCreateFailed: 'Failed to create product.',
   },
   ar: {
     shopNav: 'المتجر',
@@ -429,6 +462,22 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     createItemBtn: 'إنشاء المنتج',
     cancel: 'إلغاء',
     confirmDelete: 'هل أنت متأكد من حذف هذا المنتج؟',
+    toastOrderUpdated: (id: string, status: string) => `تم تحديث حالة الطلب #${id} إلى ${status === 'OPENED' || status === 'opened' ? 'مفتوح' : 'مغلق'}.`,
+    toastOrderUpdateFailed: 'فشل تحديث حالة الطلب.',
+    toastNoteEmpty: 'يرجى كتابة ملاحظة قبل إضافتها للسجل.',
+    toastNoteSaved: 'تم تسجيل الملاحظة في السجل بنجاح.',
+    toastNoteFailed: 'فشل حفظ الملاحظة.',
+    toastItemDeleted: 'تم حذف المنتج من الكتالوج بنجاح.',
+    toastItemDeleteFailed: 'فشل حذف المنتج.',
+    toastLoadItemFailed: 'فشل تحميل بيانات المنتج.',
+    toastImageUploaded: 'تم رفع الصورة بنجاح.',
+    toastImageUploadFailed: 'فشل رفع ملف الصورة.',
+    toastFillRequiredEnFields: 'يرجى ملء جميع الحقول الإنجليزية الأساسية (الاسم، التصنيف، الوصف)',
+    toastInvalidPrice: 'يجب أن يكون السعر رقماً موجباً أو صفراً',
+    toastItemUpdated: 'تم حفظ تعديلات المنتج والترجمات بنجاح.',
+    toastItemUpdateFailed: 'فشل تحديث المنتج.',
+    toastItemCreated: 'تم إنشاء المنتج الجديد والترجمات بنجاح.',
+    toastItemCreateFailed: 'فشل إنشاء المنتج.',
   },
 };
 

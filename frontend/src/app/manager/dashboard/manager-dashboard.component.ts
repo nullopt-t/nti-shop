@@ -118,30 +118,30 @@ export class ManagerDashboardComponent implements OnInit {
     const nextStatus = order.status === 'opened' ? 'closed' : 'opened';
     this.api.updateManagerOrder(order._id, { status: nextStatus }).subscribe({
       next: (res) => {
-        this.notify(`Order #${order._id.slice(-6)} status updated to ${nextStatus.toUpperCase()}`);
+        this.notify(this.langService.t().toastOrderUpdated(order._id.slice(-6), nextStatus.toUpperCase()));
         this.loadOrders();
       },
-      error: (err) => this.notify('Failed to update order status', 'error'),
+      error: (err) => this.notify(this.langService.t().toastOrderUpdateFailed, 'error'),
     });
   }
 
   saveOrderNotes(orderId: string): void {
     const noteText = (this.editingNotesMap()[orderId] || '').trim();
     if (!noteText) {
-      this.notify('Please enter a note before adding to log', 'error');
+      this.notify(this.langService.t().toastNoteEmpty, 'error');
       return;
     }
 
     this.api.updateManagerOrder(orderId, { notes: noteText }).subscribe({
       next: () => {
-        this.notify('New log entry recorded.');
+        this.notify(this.langService.t().toastNoteSaved);
         // Clear input for this order
         const map = { ...this.editingNotesMap() };
         map[orderId] = '';
         this.editingNotesMap.set(map);
         this.loadOrders();
       },
-      error: () => this.notify('Failed to save log entry', 'error'),
+      error: () => this.notify(this.langService.t().toastNoteFailed, 'error'),
     });
   }
 
@@ -164,11 +164,11 @@ export class ManagerDashboardComponent implements OnInit {
     if (!confirm(this.langService.t().confirmDelete)) return;
     this.api.deleteManagerItem(id).subscribe({
       next: () => {
-        this.notify('Item removed from catalog.');
+        this.notify(this.langService.t().toastItemDeleted);
         this.loadItems();
         this.loadCategories();
       },
-      error: (err) => this.notify(err.error?.message || 'Failed to delete item', 'error'),
+      error: (err) => this.notify(err.error?.message || this.langService.t().toastItemDeleteFailed, 'error'),
     });
   }
 

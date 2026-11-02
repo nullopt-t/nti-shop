@@ -96,7 +96,7 @@ export class ManagerItemFormComponent implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        this.notify('Failed to load product details.', 'error');
+        this.notify(this.langService.t().toastLoadItemFailed, 'error');
         this.handleAuthError(err);
       },
     });
@@ -115,12 +115,12 @@ export class ManagerItemFormComponent implements OnInit {
         this.imagePreview.set(res.imageUrl);
         this.uploadingImage.set(false);
         input.value = '';
-        this.notify('Image uploaded successfully.');
+        this.notify(this.langService.t().toastImageUploaded);
       },
       error: (err) => {
         this.uploadingImage.set(false);
         input.value = '';
-        this.notify(err.error?.message || 'Failed to upload image', 'error');
+        this.notify(err.error?.message || this.langService.t().toastImageUploadFailed, 'error');
       },
     });
   }
@@ -136,12 +136,12 @@ export class ManagerItemFormComponent implements OnInit {
 
   saveProduct(): void {
     if (!this.itemForm.name.trim() || !this.itemForm.category.trim() || !this.itemForm.description.trim()) {
-      this.notify('Please fill all required English fields (name, category, description)', 'error');
+      this.notify(this.langService.t().toastFillRequiredEnFields, 'error');
       return;
     }
 
     if (this.itemForm.price < 0) {
-      this.notify('Price must be greater than or equal to zero', 'error');
+      this.notify(this.langService.t().toastInvalidPrice, 'error');
       return;
     }
 
@@ -169,12 +169,12 @@ export class ManagerItemFormComponent implements OnInit {
       this.api.updateManagerItem(id, payload).subscribe({
         next: () => {
           this.saving.set(false);
-          this.notify('Product and translations updated successfully.');
+          this.notify(this.langService.t().toastItemUpdated);
           setTimeout(() => this.router.navigate(['/manager/dashboard']), 800);
         },
         error: (err) => {
           this.saving.set(false);
-          this.notify(err.error?.message || 'Failed to update product', 'error');
+          this.notify(err.error?.message || this.langService.t().toastItemUpdateFailed, 'error');
         },
       });
     } else {
@@ -182,12 +182,12 @@ export class ManagerItemFormComponent implements OnInit {
       this.api.createManagerItem(payload).subscribe({
         next: () => {
           this.saving.set(false);
-          this.notify('New product and translations created.');
+          this.notify(this.langService.t().toastItemCreated);
           setTimeout(() => this.router.navigate(['/manager/dashboard']), 800);
         },
         error: (err) => {
           this.saving.set(false);
-          this.notify(err.error?.message || 'Failed to create product', 'error');
+          this.notify(err.error?.message || this.langService.t().toastItemCreateFailed, 'error');
         },
       });
     }
