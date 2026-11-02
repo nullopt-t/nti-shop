@@ -162,6 +162,8 @@ describe('Public Storefront Endpoints', () => {
     const updated = await Order.findById(order._id);
     assert.strictEqual(updated.paymentStatus, 'paid');
     assert.strictEqual(updated.paymobDetails.transactionId, '998877');
+    assert.ok(Array.isArray(updated.notes));
+    assert.ok(updated.notes.some((n) => n.content.includes('998877')));
   });
 
   test('GET /api/payment-methods returns configured payment methods', async () => {
@@ -353,9 +355,11 @@ describe('Manager Administrative Endpoints', () => {
       });
     assert.strictEqual(patchRes.status, 200);
     assert.strictEqual(patchRes.body.data.status, 'closed');
-    assert.strictEqual(
-      patchRes.body.data.notes,
-      'Called customer Alice. Address confirmed. Dispatched for delivery.'
+    assert.ok(Array.isArray(patchRes.body.data.notes));
+    assert.ok(
+      patchRes.body.data.notes.some((n) =>
+        n.content.includes('Called customer Alice. Address confirmed.')
+      )
     );
   });
 });

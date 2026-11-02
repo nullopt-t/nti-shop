@@ -131,7 +131,7 @@ export async function createPublicOrder(req, res, next) {
       paymentMethod,
       paymentStatus: 'pending',
       status: 'opened',
-      notes: '',
+      notes: [],
     });
 
     // 1. Cash on Delivery
@@ -173,7 +173,10 @@ export async function createPublicOrder(req, res, next) {
         });
       } catch (err) {
         newOrder.paymentStatus = 'failed';
-        newOrder.notes = `Payment initialization error: ${err.message}`;
+        newOrder.notes.push({
+          time: new Date(),
+          content: `Payment initialization error: ${err.message}`,
+        });
         await newOrder.save();
 
         return res.status(502).json({
@@ -214,7 +217,10 @@ export async function createPublicOrder(req, res, next) {
         });
       } catch (err) {
         newOrder.paymentStatus = 'failed';
-        newOrder.notes = `Stripe initialization error: ${err.message}`;
+        newOrder.notes.push({
+          time: new Date(),
+          content: `Stripe initialization error: ${err.message}`,
+        });
         await newOrder.save();
 
         return res.status(502).json({
@@ -276,14 +282,24 @@ export async function handlePaymobWebhook(req, res, next) {
 
     order.paymobDetails = order.paymobDetails || {};
     order.paymobDetails.transactionId = String(transactionObj.id);
+    order.notes = order.notes || [];
 
     if (isSuccess && !isPending) {
-      order.notes = [order.notes, `Paid via Paymob transaction #${transactionObj.id}`].filter(Boolean).join(' | ');
+      order.notes.push({
+        time: new Date(),
+        content: `Paid via Paymob transaction #${transactionObj.id}`,
+      });
     } else if (isPending) {
-      order.notes = [order.notes, `Paymob payment pending #${transactionObj.id}`].filter(Boolean).join(' | ');
+      order.notes.push({
+        time: new Date(),
+        content: `Paymob payment pending #${transactionObj.id}`,
+      });
     } else {
       const declineReason = transactionObj.data?.message || transactionObj.txn_response_code || 'declined';
-      order.notes = [order.notes, `Paymob payment failed #${transactionObj.id} (${declineReason})`].filter(Boolean).join(' | ');
+      order.notes.push({
+        time: new Date(),
+        content: `Paymob payment failed #${transactionObj.id} (${declineReason})`,
+      });
     }
 
     await order.save();
@@ -329,7 +345,11 @@ export async function handleStripeWebhook(req, res, next) {
           order.stripeDetails = order.stripeDetails || {};
           order.stripeDetails.sessionId = sessionObj.id || order.stripeDetails.sessionId;
           order.stripeDetails.paymentIntentId = sessionObj.payment_intent ? String(sessionObj.payment_intent) : order.stripeDetails.paymentIntentId;
-          order.notes = [order.notes, `Paid via Stripe session #${sessionObj.id}`].filter(Boolean).join(' | ');
+          order.notes = order.notes || [];
+          order.notes.push({
+            time: new Date(),
+            content: `Paid via Stripe session #${sessionObj.id}`,
+          });
           await order.save();
           console.log(`[Stripe Webhook] Order #${orderId} marked as PAID`);
         }
@@ -374,7 +394,11 @@ export async function getPublicOrderStatus(req, res, next) {
           if (session.customer_details?.email) {
             order.stripeDetails.customerEmail = session.customer_details.email;
           }
-          order.notes = [order.notes, `Paid via verified Stripe session #${session.id}`].filter(Boolean).join(' | ');
+          order.notes = order.notes || [];
+          order.notes.push({
+            time: new Date(),
+            content: `Paid via verified Stripe session #${session.id}`,
+          });
           await order.save();
           console.log(`[Stripe Direct Verification] Order #${order._id} verified as PAID via Stripe session #${session.id}`);
         }

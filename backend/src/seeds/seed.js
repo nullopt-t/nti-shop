@@ -99,7 +99,12 @@ async function seed() {
     ],
     totalPrice: createdItems[0].price + createdItems[2].price * 2,
     status: 'opened',
-    notes: 'Client confirmed size Large by telephone. Scheduled for express delivery handover.',
+    notes: [
+      {
+        time: new Date(),
+        content: 'Client confirmed size Large by telephone. Scheduled for express delivery handover.',
+      },
+    ],
   };
   await Order.create(sampleOrder);
 

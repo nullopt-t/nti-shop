@@ -31,6 +31,22 @@ const orderItemSnapshotSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const noteEntrySchema = new mongoose.Schema(
+  {
+    time: {
+      type: Date,
+      default: Date.now,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  { _id: false }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     userDetails: {
@@ -92,9 +108,8 @@ const orderSchema = new mongoose.Schema(
       index: true,
     },
     notes: {
-      type: String,
-      default: '',
-      trim: true,
+      type: [noteEntrySchema],
+      default: [],
     },
   },
   {

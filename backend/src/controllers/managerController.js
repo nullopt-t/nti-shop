@@ -161,7 +161,26 @@ export async function updateManagerOrder(req, res, next) {
     }
 
     if (notes !== undefined) {
-      order.notes = notes.trim();
+      if (typeof notes === 'string') {
+        const trimmed = notes.trim();
+        if (trimmed) {
+          order.notes = order.notes || [];
+          order.notes.push({
+            time: new Date(),
+            content: trimmed,
+          });
+        }
+      } else if (Array.isArray(notes)) {
+        order.notes = notes.map((n) => {
+          if (typeof n === 'string') {
+            return { time: new Date(), content: n.trim() };
+          }
+          return {
+            time: n.time ? new Date(n.time) : new Date(),
+            content: (n.content || '').trim(),
+          };
+        }).filter((n) => n.content.length > 0);
+      }
     }
 
     await order.save();
