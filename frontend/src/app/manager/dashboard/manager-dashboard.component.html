@@ -267,7 +267,7 @@
                     <a [routerLink]="['/manager/items', itm._id]" class="btn btn-sm" style="margin-right: 6px; text-decoration: none; display: inline-block;">
                       {{ langService.t().edit }}
                     </a>
-                    <button class="btn btn-sm btn-danger" (click)="deleteItem(itm._id)">
+                    <button class="btn btn-sm btn-danger" (click)="promptDeleteItem(itm)">
                       {{ langService.t().delete }}
                     </button>
                   </td>
@@ -276,6 +276,44 @@
             }
           </tbody>
         </table>
+      </div>
+    </div>
+  }
+
+  <!-- ================= CUSTOM DELETION CONFIRMATION DIALOG ================= -->
+  @if (itemToDelete(); as targetItem) {
+    <div class="modal-backdrop" (click)="cancelDeleteItem()">
+      <div class="modal-card delete-modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header delete-modal-header">
+          <span class="modal-title">⚠️ {{ langService.t().confirmDeleteTitle }}</span>
+          <button type="button" class="modal-close" (click)="cancelDeleteItem()" [disabled]="deletingItem()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="delete-warning-text">
+            {{ langService.t().confirmDeleteMsg(getItemDisplayName(targetItem)) }}
+          </p>
+          <div class="delete-target-preview">
+            @if (targetItem.image) {
+              <img [src]="targetItem.image" [alt]="getItemDisplayName(targetItem)" class="target-thumb" />
+            }
+            <div class="target-meta">
+              <strong>{{ getItemDisplayName(targetItem)) }}</strong>
+              <span class="target-price">${{ targetItem.price.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-outline" (click)="cancelDeleteItem()" [disabled]="deletingItem()">
+            {{ langService.t().cancel }}
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" (click)="confirmDeleteItem()" [disabled]="deletingItem()">
+            @if (deletingItem()) {
+              ...
+            } @else {
+              🗑 {{ langService.t().confirmDeleteBtn }}
+            }
+          </button>
+        </div>
       </div>
     </div>
   }

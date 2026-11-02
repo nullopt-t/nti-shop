@@ -150,6 +150,9 @@ export interface AppTranslations {
   createItemBtn: string;
   cancel: string;
   confirmDelete: string;
+  confirmDeleteTitle: string;
+  confirmDeleteMsg: (name: string) => string;
+  confirmDeleteBtn: string;
   // Toasts
   toastOrderUpdated: (id: string, status: string) => string;
   toastOrderUpdateFailed: string;
@@ -312,6 +315,9 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     createItemBtn: 'Create Product',
     cancel: 'Cancel',
     confirmDelete: 'Are you sure you want to delete this clothing item?',
+    confirmDeleteTitle: 'CONFIRM PRODUCT REMOVAL',
+    confirmDeleteMsg: (name: string) => `Are you sure you want to permanently delete "${name}" from the store catalog? This action cannot be undone.`,
+    confirmDeleteBtn: 'DELETE PRODUCT',
     toastOrderUpdated: (id: string, status: string) => `Order #${id} status updated to ${status}.`,
     toastOrderUpdateFailed: 'Failed to update order status.',
     toastNoteEmpty: 'Please enter a note before adding to log.',
@@ -471,6 +477,9 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     createItemBtn: 'إنشاء المنتج',
     cancel: 'إلغاء',
     confirmDelete: 'هل أنت متأكد من حذف هذا المنتج؟',
+    confirmDeleteTitle: 'تأكيد حذف المنتج نهائياً',
+    confirmDeleteMsg: (name: string) => `هل أنت متأكد من رغبتك في حذف المنتج "${name}" نهائياً من كتالوج المتجر؟ لا يمكن التراجع عن هذا الإجراء.`,
+    confirmDeleteBtn: 'نعم، احذف المنتج',
     toastOrderUpdated: (id: string, status: string) => `تم تحديث حالة الطلب #${id} إلى ${status === 'OPENED' || status === 'opened' ? 'مفتوح' : 'مغلق'}.`,
     toastOrderUpdateFailed: 'فشل تحديث حالة الطلب.',
     toastNoteEmpty: 'يرجى كتابة ملاحظة قبل إضافتها للسجل.',

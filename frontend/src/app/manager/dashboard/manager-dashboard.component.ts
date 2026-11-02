@@ -39,6 +39,10 @@ export class ManagerDashboardComponent implements OnInit {
   // Status/Feedback alerts
   readonly notification = signal<{ text: string; type: 'success' | 'error' } | null>(null);
 
+  // Custom Delete Confirmation Modal State
+  readonly itemToDelete = signal<Item | null>(null);
+  readonly deletingItem = signal<boolean>(false);
+
   ngOnInit(): void {
     this.refreshAllData();
   }
@@ -167,15 +171,31 @@ export class ManagerDashboardComponent implements OnInit {
     });
   }
 
-  deleteItem(id: string): void {
-    if (!confirm(this.langService.t().confirmDelete)) return;
-    this.api.deleteManagerItem(id).subscribe({
+  promptDeleteItem(item: Item): void {
+    this.itemToDelete.set(item);
+  }
+
+  cancelDeleteItem(): void {
+    this.itemToDelete.set(null);
+  }
+
+  confirmDeleteItem(): void {
+    const item = this.itemToDelete();
+    if (!item) return;
+
+    this.deletingItem.set(true);
+    this.api.deleteManagerItem(item._id).subscribe({
       next: () => {
+        this.deletingItem.set(false);
+        this.itemToDelete.set(null);
         this.notify(this.langService.t().toastItemDeleted);
         this.loadItems();
         this.loadCategories();
       },
-      error: (err) => this.notify(err.error?.message || this.langService.t().toastItemDeleteFailed, 'error'),
+      error: (err) => {
+        this.deletingItem.set(false);
+        this.notify(err.error?.message || this.langService.t().toastItemDeleteFailed, 'error');
+      },
     });
   }
 
