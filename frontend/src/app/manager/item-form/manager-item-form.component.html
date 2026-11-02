@@ -132,6 +132,10 @@
               <button type="button" class="btn-remove-preview" (click)="clearImage()" title="Remove Image">✕</button>
             </div>
           }
+
+          <div class="upload-save-hint">
+            💡 {{ langService.t().rememberToSaveNotice }}
+          </div>
         </div>
       </section>
 
@@ -173,5 +177,24 @@
         </div>
       </section>
     </form>
+
+    <!-- Bottom Actions Sticky/Bar -->
+    <div class="form-bottom-bar">
+      <a routerLink="/manager/dashboard" class="btn btn-secondary">
+        {{ langService.t().cancel }}
+      </a>
+      <button
+        type="button"
+        class="btn-save-primary"
+        [disabled]="saving()"
+        (click)="saveProduct()"
+      >
+        @if (saving()) {
+          ...
+        } @else {
+          ✓ {{ isEditMode() ? langService.t().saveChanges : langService.t().createItemBtn }}
+        }
+      </button>
+    </div>
   }
 </div>

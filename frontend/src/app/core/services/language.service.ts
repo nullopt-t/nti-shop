@@ -142,6 +142,7 @@ export interface AppTranslations {
   uploading: string;
   uploadImageBtn: string;
   pasteUrlPlaceholder: string;
+  rememberToSaveNotice: string;
   saveChanges: string;
   createItemBtn: string;
   cancel: string;
@@ -283,6 +284,7 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     uploading: 'Uploading image...',
     uploadImageBtn: 'UPLOAD IMAGE FILE',
     pasteUrlPlaceholder: 'Or paste image URL...',
+    rememberToSaveNotice: 'Image uploaded. Click Save Changes above or below to save permanently.',
     saveChanges: 'Save Changes',
     createItemBtn: 'Create Product',
     cancel: 'Cancel',
@@ -422,6 +424,7 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     uploading: 'جاري رفع الصورة...',
     uploadImageBtn: 'رفع ملف صورة محلي',
     pasteUrlPlaceholder: 'أو الصق رابط الصورة...',
+    rememberToSaveNotice: 'تم رفع الصورة للمعاينة. اضغط "حفظ التعديلات" لحفظها نهائياً للمنتج.',
     saveChanges: 'حفظ التعديلات',
     createItemBtn: 'إنشاء المنتج',
     cancel: 'إلغاء',

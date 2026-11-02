@@ -256,6 +256,47 @@
   }
 }
 
+.upload-save-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.03);
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  border-left: 3px solid #2563eb;
+}
+
+.form-bottom-bar {
+  margin-top: 32px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+
+  .btn-secondary {
+    padding: 12px 24px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-xs);
+    background: transparent;
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #f4f4f5;
+    }
+  }
+}
+
 .loading-state {
   text-align: center;
   padding: 60px 0;
