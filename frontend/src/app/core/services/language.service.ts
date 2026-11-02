@@ -58,10 +58,28 @@ export interface ManagerTranslations {
   createItemBtn: string;
   cancel: string;
   confirmDelete: string;
+  refresh: string;
+  collectionsTitle: string;
+  categoryLabel: string;
+  allCollections: string;
+  loadingCollection: string;
+  reload: string;
+  noProductsCategory: string;
+  addToBag: string;
+  viewProduct: string;
 }
 
 const UI_DICTIONARY: Record<Language, ManagerTranslations> = {
   en: {
+    refresh: '↻ REFRESH',
+    collectionsTitle: 'COLLECTIONS',
+    categoryLabel: 'CATEGORY',
+    allCollections: 'ALL COLLECTIONS',
+    loadingCollection: 'LOADING COLLECTION...',
+    reload: 'RELOAD',
+    noProductsCategory: 'No products currently available in this category.',
+    addToBag: '+ ADD TO BAG',
+    viewProduct: 'VIEW PRODUCT',
     staffConsole: 'STAFF CONSOLE',
     viewPublicShop: '↗ VIEW PUBLIC SHOP',
     logout: 'LOGOUT',
@@ -119,6 +137,15 @@ const UI_DICTIONARY: Record<Language, ManagerTranslations> = {
     confirmDelete: 'Are you sure you want to delete this clothing item?',
   },
   ar: {
+    refresh: '↻ تحديث',
+    collectionsTitle: 'التشكيلات والتصنيفات',
+    categoryLabel: 'التصنيف',
+    allCollections: 'جميع التشكيلات',
+    loadingCollection: 'جاري تحميل التشكيلة...',
+    reload: 'إعادة التحميل',
+    noProductsCategory: 'لا توجد منتجات متوفرة حالياً في هذا التصنيف.',
+    addToBag: '+ إضافة إلى الحقيبة',
+    viewProduct: 'عرض المنتج',
     staffConsole: 'لوحة تحكم الإدارة',
     viewPublicShop: '↗ عرض المتجر للعملاء',
     logout: 'تسجيل خروج',

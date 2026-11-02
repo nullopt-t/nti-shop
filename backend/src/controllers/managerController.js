@@ -33,7 +33,19 @@ export async function managerLogin(req, res) {
 export async function getManagerCategories(req, res, next) {
   try {
     const rawCategories = await Item.distinct('category');
-    const categories = rawCategories.filter(Boolean).sort((a, b) => a.localeCompare(b));
+    const items = await Item.find({}, { translations: 1 }).lean();
+
+    const categorySet = new Set(rawCategories.filter(Boolean));
+    for (const item of items) {
+      if (item.translations && typeof item.translations === 'object') {
+        for (const lang of Object.keys(item.translations)) {
+          const transCat = item.translations[lang]?.category;
+          if (transCat) categorySet.add(transCat);
+        }
+      }
+    }
+
+    const categories = Array.from(categorySet).sort((a, b) => a.localeCompare(b));
     res.status(200).json({ success: true, count: categories.length, data: categories });
   } catch (error) {
     next(error);

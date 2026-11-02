@@ -2,16 +2,16 @@
   <!-- Collection Filter Dropdown -->
   <div class="collection-filter-wrapper">
     <div class="filter-headline">
-      <h2>COLLECTIONS</h2>
+      <h2>{{ langService.t().collectionsTitle }}</h2>
       
       <div class="filter-dropdown-group">
-        <label for="categoryFilter" class="dropdown-label">CATEGORY</label>
+        <label for="categoryFilter" class="dropdown-label">{{ langService.t().categoryLabel }}</label>
         <div class="select-wrapper">
           <select 
             id="categoryFilter"
             class="category-select"
             (change)="onCategoryDropdownChange($event)">
-            <option value="">ALL COLLECTIONS</option>
+            <option value="">{{ langService.t().allCollections }}</option>
             @for (cat of categories(); track cat) {
               <option [value]="cat" [selected]="selectedCategory() === cat">
                 {{ cat }}
@@ -28,16 +28,16 @@
   @if (loading()) {
     <div class="state-container">
       <div class="spinner"></div>
-      <p>LOADING COLLECTION...</p>
+      <p>{{ langService.t().loadingCollection }}</p>
     </div>
   } @else if (error()) {
     <div class="state-container error">
       <p>{{ error() }}</p>
-      <button class="btn btn-sm btn-primary" (click)="loadItems()">RELOAD</button>
+      <button class="btn btn-sm btn-primary" (click)="loadItems()">{{ langService.t().reload }}</button>
     </div>
   } @else if (items().length === 0) {
     <div class="state-container">
-      <p>No products currently available in this category.</p>
+      <p>{{ langService.t().noProductsCategory }}</p>
     </div>
   } @else {
     <div class="product-grid">
@@ -60,7 +60,7 @@
             </button>
             <div class="quick-add-bar">
               <button class="btn-quick-add" (click)="onAddToCart(item, $event)">
-                QUICK ADD +
+                {{ langService.t().addToBag }}
               </button>
             </div>
           </div>
