@@ -43,7 +43,6 @@
     <form (ngSubmit)="saveProduct()" class="product-form-grid">
       <!-- Left Column: English (Default) Details -->
       <section class="form-card english-card">
-        <div class="card-badge en-badge">EN</div>
         <h2 class="card-title">{{ langService.t().englishDetails }}</h2>
 
         <div class="form-group">
@@ -135,7 +134,6 @@
 
       <!-- Right Column: Arabic Translation Details -->
       <section class="form-card arabic-card" dir="rtl">
-        <div class="card-badge ar-badge">AR</div>
         <h2 class="card-title">{{ langService.t().arabicTranslations }}</h2>
 
         <div class="form-group">
