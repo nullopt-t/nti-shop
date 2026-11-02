@@ -213,24 +213,28 @@
                 <tr>
                   <td>
                     @if (itm.image) {
-                      <img [src]="itm.image" [alt]="itm.name" class="inventory-thumb" />
+                      <img [src]="itm.image" [alt]="getItemDisplayName(itm)" class="inventory-thumb" />
                     } @else {
                       <div class="inventory-thumb thumb-placeholder">
-                        <span>{{ itm.name }}</span>
+                        <span>{{ getItemDisplayName(itm) }}</span>
                       </div>
                     }
                   </td>
                   <td>
-                    <strong class="inventory-title">{{ itm.name }}</strong>
-                    <p class="inventory-desc">{{ itm.description }}</p>
-                    @if (itm.translations?.['ar']?.name) {
+                    <strong class="inventory-title">{{ getItemDisplayName(itm) }}</strong>
+                    <p class="inventory-desc">{{ getItemDisplayDescription(itm) }}</p>
+                    @if (langService.currentLanguage() === 'ar' && itm.name !== getItemDisplayName(itm)) {
+                      <p class="inventory-trans-ar" style="font-size: 11.5px; color: var(--text-muted); margin: 4px 0 0;" dir="ltr">
+                        EN: {{ itm.name }}
+                      </p>
+                    } @else if (langService.currentLanguage() === 'en' && itm.translations?.['ar']?.name) {
                       <p class="inventory-trans-ar" style="font-size: 11.5px; color: #2563eb; margin: 4px 0 0;" dir="rtl">
                         AR: {{ itm.translations?.['ar']?.name }}
                       </p>
                     }
                   </td>
                   <td>
-                    <span class="badge badge-category">{{ itm.category }}</span>
+                    <span class="badge badge-category">{{ getItemDisplayCategory(itm) }}</span>
                   </td>
                   <td class="price-tag">${{ itm.price.toFixed(2) }}</td>
                   <td style="text-align: right;">

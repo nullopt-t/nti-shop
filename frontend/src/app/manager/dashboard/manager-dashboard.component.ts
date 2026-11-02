@@ -53,6 +53,30 @@ export class ManagerDashboardComponent implements OnInit {
     setTimeout(() => this.notification.set(null), 3500);
   }
 
+  getItemDisplayName(itm: Item): string {
+    const lang = this.langService.currentLanguage();
+    if (lang !== 'en' && itm.translations?.[lang]?.name) {
+      return itm.translations[lang].name!;
+    }
+    return itm.name;
+  }
+
+  getItemDisplayDescription(itm: Item): string {
+    const lang = this.langService.currentLanguage();
+    if (lang !== 'en' && itm.translations?.[lang]?.description) {
+      return itm.translations[lang].description!;
+    }
+    return itm.description;
+  }
+
+  getItemDisplayCategory(itm: Item): string {
+    const lang = this.langService.currentLanguage();
+    if (lang !== 'en' && itm.translations?.[lang]?.category) {
+      return itm.translations[lang].category!;
+    }
+    return itm.category;
+  }
+
   // --- ORDERS TAB ---
   loadOrders(): void {
     const filter = this.orderStatusFilter() === 'all' ? undefined : this.orderStatusFilter();
