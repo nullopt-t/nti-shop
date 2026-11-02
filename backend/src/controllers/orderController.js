@@ -11,11 +11,18 @@ export function getEnabledPaymentMethodsList() {
 
   const stripeExplicit = process.env.ENABLE_STRIPE;
   const stripeConfigured = stripeService.isConfigured();
-  if (
-    stripeExplicit === 'true' ||
-    (stripeExplicit !== 'false' && stripeConfigured) ||
-    (process.env.NODE_ENV === 'test' && stripeExplicit !== 'false')
-  ) {
+
+  // In test mode, allow stripe if not explicitly disabled
+  if (process.env.NODE_ENV === 'test') {
+    if (stripeExplicit !== 'false') {
+      methods.push('stripe');
+    }
+    return methods;
+  }
+
+  // In development and production:
+  // Only advertise and enable Stripe if ENABLE_STRIPE is true AND STRIPE_SECRET_KEY is configured
+  if (stripeExplicit === 'true' && stripeConfigured) {
     methods.push('stripe');
   }
 

@@ -46,8 +46,9 @@ export class CheckoutComponent implements OnInit {
         }
       },
       error: () => {
-        // Fallback to default
-        this.availableMethods.set(['cod', 'stripe']);
+        // Fallback to safe default
+        this.availableMethods.set(['cod']);
+        this.paymentMethod = 'cod';
       },
     });
 
