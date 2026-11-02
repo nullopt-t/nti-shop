@@ -1,9 +1,10 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { CartService } from '../../core/services/cart.service';
 import { FavoritesService } from '../../core/services/favorites.service';
+import { LanguageService } from '../../core/services/language.service';
 import { Item } from '../../core/models/item.model';
 
 @Component({
@@ -17,6 +18,7 @@ export class CatalogComponent implements OnInit {
   private api = inject(ApiService);
   readonly cartService = inject(CartService);
   readonly favoritesService = inject(FavoritesService);
+  readonly langService = inject(LanguageService);
 
   readonly categories = signal<string[]>([]);
   readonly items = signal<Item[]>([]);
@@ -24,10 +26,17 @@ export class CatalogComponent implements OnInit {
   readonly loading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
 
-  ngOnInit(): void {
-    this.loadCategories();
-    this.loadItems();
+  constructor() {
+    effect(() => {
+      // Re-fetch catalog items & categories whenever the active language changes
+      this.langService.currentLanguage();
+      this.selectedCategory.set(null);
+      this.loadCategories();
+      this.loadItems();
+    });
   }
+
+  ngOnInit(): void {}
 
   loadCategories(): void {
     this.api.getPublicCategories().subscribe({

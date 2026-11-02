@@ -4,6 +4,7 @@ import { filter } from 'rxjs';
 import { CartService } from './core/services/cart.service';
 import { FavoritesService } from './core/services/favorites.service';
 import { AuthService } from './core/services/auth.service';
+import { LanguageService } from './core/services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class App {
   readonly cartService = inject(CartService);
   readonly favoritesService = inject(FavoritesService);
   readonly authService = inject(AuthService);
+  readonly langService = inject(LanguageService);
 
   readonly isManagerRoute = signal<boolean>(
     typeof window !== 'undefined' ? window.location.pathname.startsWith('/manager') : false

@@ -1,10 +1,11 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { CartService } from '../../core/services/cart.service';
 import { FavoritesService } from '../../core/services/favorites.service';
+import { LanguageService } from '../../core/services/language.service';
 import { Item } from '../../core/models/item.model';
 
 @Component({
@@ -20,6 +21,7 @@ export class ItemDetailComponent implements OnInit {
   private api = inject(ApiService);
   readonly cartService = inject(CartService);
   readonly favoritesService = inject(FavoritesService);
+  readonly langService = inject(LanguageService);
 
   readonly item = signal<Item | null>(null);
   readonly quantity = signal<number>(1);
@@ -27,12 +29,24 @@ export class ItemDetailComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly addedNotification = signal<boolean>(false);
 
+  private currentItemId: string | null = null;
+
+  constructor() {
+    effect(() => {
+      this.langService.currentLanguage();
+      if (this.currentItemId) {
+        this.loadItem(this.currentItemId);
+      }
+    });
+  }
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.router.navigate(['/']);
       return;
     }
+    this.currentItemId = id;
     this.loadItem(id);
   }
 

@@ -37,19 +37,27 @@
 
       <nav class="nav-links">
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
-          SHOP
+          {{ langService.currentLanguage() === 'ar' ? 'المتجر' : 'SHOP' }}
         </a>
         <a routerLink="/favorites" routerLinkActive="active" class="nav-item">
-          SAVED
+          {{ langService.currentLanguage() === 'ar' ? 'المفضلة' : 'SAVED' }}
           @if (favoritesService.count() > 0) {
             <span class="counter-badge">{{ favoritesService.count() }}</span>
           }
         </a>
         <a routerLink="/cart" routerLinkActive="active" class="nav-item nav-cart">
-          BAG
+          {{ langService.currentLanguage() === 'ar' ? 'الحقيبة' : 'BAG' }}
           <span class="counter-badge">{{ cartService.count() }}</span>
           <span class="nav-total">${{ cartService.total().toFixed(2) }}</span>
         </a>
+        <button
+          type="button"
+          class="btn-lang-toggle"
+          (click)="langService.toggleLanguage()"
+          [title]="langService.currentLanguage() === 'en' ? 'التبديل إلى العربية' : 'Switch to English'"
+        >
+          {{ langService.currentLanguage() === 'en' ? 'AR' : 'EN' }}
+        </button>
       </nav>
     </div>
   </header>

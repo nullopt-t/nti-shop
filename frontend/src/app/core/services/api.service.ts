@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Item } from '../models/item.model';
 import { Order, OrderNote, CreateOrderPayload, CreateOrderResponse } from '../models/order.model';
+import { LanguageService } from './language.service';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -16,16 +17,27 @@ export interface ApiResponse<T> {
 })
 export class ApiService {
   private readonly baseUrl = '/api';
+  private readonly langService = inject(LanguageService);
 
   constructor(private http: HttpClient) {}
 
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'X-Language': this.langService.currentLanguage(),
+    });
+  }
+
   // --- PUBLIC ENDPOINTS ---
   getPaymentMethods(): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/payment-methods`);
+    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/payment-methods`, {
+      headers: this.getHeaders(),
+    });
   }
 
   getPublicCategories(): Observable<ApiResponse<string[]>> {
-    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/categories`);
+    return this.http.get<ApiResponse<string[]>>(`${this.baseUrl}/categories`, {
+      headers: this.getHeaders(),
+    });
   }
 
   getPublicItems(category?: string): Observable<ApiResponse<Item[]>> {
@@ -33,11 +45,16 @@ export class ApiService {
     if (category) {
       params = params.set('category', category);
     }
-    return this.http.get<ApiResponse<Item[]>>(`${this.baseUrl}/items`, { params });
+    return this.http.get<ApiResponse<Item[]>>(`${this.baseUrl}/items`, {
+      params,
+      headers: this.getHeaders(),
+    });
   }
 
   getPublicItemById(id: string): Observable<ApiResponse<Item>> {
-    return this.http.get<ApiResponse<Item>>(`${this.baseUrl}/items/${id}`);
+    return this.http.get<ApiResponse<Item>>(`${this.baseUrl}/items/${id}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   submitOrder(payload: CreateOrderPayload): Observable<CreateOrderResponse> {
