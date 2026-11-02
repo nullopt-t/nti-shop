@@ -5,6 +5,7 @@ import {
   managerLogin,
   getManagerCategories,
   getManagerItems,
+  getManagerItemById,
   createManagerItem,
   updateManagerItem,
   deleteManagerItem,
@@ -26,6 +27,7 @@ router.get('/categories', getManagerCategories);
 
 // Item Management
 router.get('/items', getManagerItems);
+router.get('/items/:id', getManagerItemById);
 router.post('/items', createManagerItem);
 router.put('/items/:id', updateManagerItem);
 router.delete('/items/:id', deleteManagerItem);

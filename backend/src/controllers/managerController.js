@@ -50,6 +50,24 @@ export async function getManagerItems(req, res, next) {
   }
 }
 
+export async function getManagerItemById(req, res, next) {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid item ID' });
+    }
+
+    const item = await Item.findById(id);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Item not found' });
+    }
+
+    res.status(200).json({ success: true, data: item });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function createManagerItem(req, res, next) {
   try {
     const { category, name, description, price, image, translations } = req.body;
