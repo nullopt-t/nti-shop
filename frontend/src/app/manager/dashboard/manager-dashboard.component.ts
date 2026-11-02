@@ -27,6 +27,7 @@ export class ManagerDashboardComponent implements OnInit {
   // Orders State
   readonly orders = signal<Order[]>([]);
   readonly orderStatusFilter = signal<'all' | 'opened' | 'closed'>('all');
+  readonly paymentStatusFilter = signal<'all' | 'paid' | 'pending'>('all');
   readonly editingNotesMap = signal<{ [orderId: string]: string }>({});
 
   // Items State (Category Column & CRUD)
@@ -100,8 +101,9 @@ export class ManagerDashboardComponent implements OnInit {
 
   // --- ORDERS TAB ---
   loadOrders(): void {
-    const filter = this.orderStatusFilter() === 'all' ? undefined : this.orderStatusFilter();
-    this.api.getManagerOrders(filter).subscribe({
+    const statusFilter = this.orderStatusFilter() === 'all' ? undefined : this.orderStatusFilter();
+    const paymentFilter = this.paymentStatusFilter() === 'all' ? undefined : this.paymentStatusFilter();
+    this.api.getManagerOrders(statusFilter, paymentFilter).subscribe({
       next: (res) => {
         this.orders.set(res.data);
       },
@@ -111,6 +113,11 @@ export class ManagerDashboardComponent implements OnInit {
 
   setOrderFilter(status: 'all' | 'opened' | 'closed'): void {
     this.orderStatusFilter.set(status);
+    this.loadOrders();
+  }
+
+  setPaymentFilter(paymentStatus: 'all' | 'paid' | 'pending'): void {
+    this.paymentStatusFilter.set(paymentStatus);
     this.loadOrders();
   }
 

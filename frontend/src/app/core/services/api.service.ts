@@ -100,10 +100,13 @@ export class ApiService {
     return this.http.post<{ success: boolean; imageUrl: string }>(`${this.baseUrl}/manager/upload`, formData);
   }
 
-  getManagerOrders(status?: string): Observable<ApiResponse<Order[]>> {
+  getManagerOrders(status?: string, paymentStatus?: string): Observable<ApiResponse<Order[]>> {
     let params = new HttpParams();
     if (status) {
       params = params.set('status', status);
+    }
+    if (paymentStatus) {
+      params = params.set('paymentStatus', paymentStatus);
     }
     return this.http.get<ApiResponse<Order[]>>(`${this.baseUrl}/manager/orders`, { params });
   }

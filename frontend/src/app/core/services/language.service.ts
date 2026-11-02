@@ -100,6 +100,9 @@ export interface AppTranslations {
   filterAll: string;
   filterOpened: string;
   filterClosed: string;
+  filterPaymentAll: string;
+  filterPaymentPaid: string;
+  filterPaymentPending: string;
   orderId: string;
   customer: string;
   phone: string;
@@ -259,6 +262,9 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     filterAll: 'All Orders',
     filterOpened: 'Active Orders',
     filterClosed: 'Closed Orders',
+    filterPaymentAll: 'All Payments',
+    filterPaymentPaid: 'Paid',
+    filterPaymentPending: 'Pending / COD',
     orderId: 'Order ID',
     customer: 'Customer',
     phone: 'Phone',
@@ -415,6 +421,9 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     filterAll: 'كل الطلبات',
     filterOpened: 'الطلبات النشطة',
     filterClosed: 'الطلبات المكتملة',
+    filterPaymentAll: 'كل حالات الدفع',
+    filterPaymentPaid: 'المدفوعة',
+    filterPaymentPending: 'قيد الدفع / عند الاستلام',
     orderId: 'رقم الطلب',
     customer: 'العميل',
     phone: 'رقم الهاتف',

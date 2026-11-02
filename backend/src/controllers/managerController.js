@@ -157,10 +157,13 @@ export async function deleteManagerItem(req, res, next) {
 // --- ORDER MANAGEMENT ---
 export async function getManagerOrders(req, res, next) {
   try {
-    const { status } = req.query;
+    const { status, paymentStatus } = req.query;
     const filter = {};
     if (status && ['opened', 'closed'].includes(status)) {
       filter.status = status;
+    }
+    if (paymentStatus && ['paid', 'pending', 'failed'].includes(paymentStatus)) {
+      filter.paymentStatus = paymentStatus;
     }
 
     const orders = await Order.find(filter).populate('items.itemId', 'name translations').sort({ createdAt: -1 });

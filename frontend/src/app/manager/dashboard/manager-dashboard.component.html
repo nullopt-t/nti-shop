@@ -41,6 +41,8 @@
       <div class="panel-header">
         <div class="filter-controls">
           <span class="panel-title">{{ langService.t().ordersTab }}</span>
+          
+          <!-- Order Fulfillment Status Filter -->
           <div class="pill-group">
             <button 
               class="pill-btn" 
@@ -59,6 +61,30 @@
               [class.active]="orderStatusFilter() === 'closed'" 
               (click)="setOrderFilter('closed')">
               {{ langService.t().filterClosed }}
+            </button>
+          </div>
+
+          <div class="filter-divider"></div>
+
+          <!-- Payment Status Filter -->
+          <div class="pill-group">
+            <button 
+              class="pill-btn" 
+              [class.active]="paymentStatusFilter() === 'all'" 
+              (click)="setPaymentFilter('all')">
+              {{ langService.t().filterPaymentAll }}
+            </button>
+            <button 
+              class="pill-btn pill-btn-paid" 
+              [class.active]="paymentStatusFilter() === 'paid'" 
+              (click)="setPaymentFilter('paid')">
+              ● {{ langService.t().filterPaymentPaid }}
+            </button>
+            <button 
+              class="pill-btn pill-btn-pending" 
+              [class.active]="paymentStatusFilter() === 'pending'" 
+              (click)="setPaymentFilter('pending')">
+              ○ {{ langService.t().filterPaymentPending }}
             </button>
           </div>
         </div>

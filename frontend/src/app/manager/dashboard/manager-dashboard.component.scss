@@ -87,7 +87,8 @@
 .filter-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
   width: 100%;
 
   .panel-title {
@@ -96,6 +97,12 @@
     font-weight: 800;
     letter-spacing: 1px;
     color: var(--text-primary);
+  }
+
+  .filter-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-medium);
   }
 
   .pill-group {
@@ -121,6 +128,16 @@
 
       &.active {
         background: #090a0f;
+        color: #ffffff;
+      }
+
+      &.pill-btn-paid.active {
+        background: #059669;
+        color: #ffffff;
+      }
+
+      &.pill-btn-pending.active {
+        background: #d97706;
         color: #ffffff;
       }
     }
