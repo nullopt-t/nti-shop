@@ -10,6 +10,7 @@
     "start:frontend": "npm start --prefix frontend",
     "build": "npm run build --prefix frontend",
     "test": "npm test --prefix backend && npm test --prefix frontend -- --watch=false",
-    "seed": "npm run seed --prefix backend"
+    "seed": "npm run seed --prefix backend",
+    "stripe:listen": "node scripts/stripe-listen.js"
   }
 }
