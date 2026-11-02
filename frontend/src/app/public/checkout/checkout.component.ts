@@ -73,7 +73,7 @@ export class CheckoutComponent implements OnInit {
 
       if (isFailedParam) {
         this.verifyingPayment.set(false);
-        this.errorMessage.set('Payment was declined or cancelled at the gateway. Please retry or choose Cash on Delivery.');
+        this.errorMessage.set(this.langService.t().paymentDeclinedMsg);
         return;
       }
 
@@ -86,15 +86,15 @@ export class CheckoutComponent implements OnInit {
 
           if (ord.paymentStatus === 'paid' || isSuccessParam) {
             this.paymentReturnNotice.set(
-              `Payment confirmed for order #${ord._id}. Total settled: $${ord.totalPrice.toFixed(2)}. Our team is preparing your dispatch.`
+              this.langService.t().paymentConfirmedMsg(ord._id, ord.totalPrice.toFixed(2))
             );
           } else if (ord.paymentStatus === 'pending' || isPendingParam) {
             this.paymentReturnNotice.set(
-              `Your payment for order #${ord._id} is being processed. We will update you once confirmed.`
+              this.langService.t().paymentPendingMsg(ord._id)
             );
           } else {
             this.errorMessage.set(
-              `Payment for order #${ord._id} could not be settled. Status: ${ord.paymentStatus}.`
+              this.langService.t().paymentDeclinedMsg
             );
           }
         },
@@ -103,10 +103,10 @@ export class CheckoutComponent implements OnInit {
           if (isSuccessParam) {
             this.cartService.clearCart();
             this.paymentReturnNotice.set(
-              `Thank you! Your payment for order #${orderId} was received. Our team will verify and coordinate delivery.`
+              this.langService.t().paymentConfirmedMsg(orderId, '0.00')
             );
           } else {
-            this.errorMessage.set('Payment could not be confirmed. Please check your banking app.');
+            this.errorMessage.set(this.langService.t().paymentDeclinedMsg);
           }
         },
       });

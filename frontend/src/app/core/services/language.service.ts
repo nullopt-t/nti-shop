@@ -84,6 +84,10 @@ export interface AppTranslations {
   redirectingToGateway: string;
   verifyingPaymentMsg: string;
 
+  paymentConfirmedMsg: (id: string, total: string) => string;
+  paymentPendingMsg: (id: string) => string;
+  paymentDeclinedMsg: string;
+
   // Manager console
   staffConsole: string;
   viewPublicShop: string;
@@ -218,6 +222,11 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     totalPaid: 'TOTAL PAID',
     redirectingToGateway: 'Redirecting to secure payment gateway...',
     verifyingPaymentMsg: 'Verifying payment status, please wait...',
+    paymentConfirmedMsg: (id: string, total: string) =>
+      `Payment confirmed for order #${id}. Total settled: $${total}. Our team is preparing your dispatch.`,
+    paymentPendingMsg: (id: string) =>
+      `Your payment for order #${id} is being processed. We will update you once confirmed.`,
+    paymentDeclinedMsg: 'Payment was declined or cancelled at the gateway. Please retry or choose Cash on Delivery.',
 
     staffConsole: 'STAFF CONSOLE',
     viewPublicShop: '↗ VIEW PUBLIC SHOP',
@@ -350,6 +359,11 @@ const UI_DICTIONARY: Record<Language, AppTranslations> = {
     totalPaid: 'الإجمالي المدفوع',
     redirectingToGateway: 'جاري تحويلك إلى بوابة الدفع الآمنة...',
     verifyingPaymentMsg: 'جاري التحقق من حالة الدفع، يرجى الانتظار...',
+    paymentConfirmedMsg: (id: string, total: string) =>
+      `تم تأكيد الدفع للطلب رقم #${id}. الإجمالي المدفوع: $${total}. فريقنا يقوم بتجهيز الشحنة والتوصيل لك.`,
+    paymentPendingMsg: (id: string) =>
+      `جاري معالجة الدفع للطلب رقم #${id}. سنقوم بإعلامك فور التأكيد.`,
+    paymentDeclinedMsg: 'تم رفض أو إلغاء عملية الدفع عبر البوابة. يمكنك المحاولة مرة أخرى أو اختيار الدفع عند الاستلام.',
 
     staffConsole: 'لوحة تحكم الإدارة',
     viewPublicShop: '↗ عرض المتجر للعملاء',
