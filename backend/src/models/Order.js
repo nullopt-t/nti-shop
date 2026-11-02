@@ -68,7 +68,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['cod', 'paymob', 'stripe'],
+      enum: ['cod', 'stripe'],
       default: 'cod',
       index: true,
     },
@@ -77,12 +77,6 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'paid', 'failed'],
       default: 'pending',
       index: true,
-    },
-    paymobDetails: {
-      intentionId: { type: String, default: null },
-      clientSecret: { type: String, default: null },
-      paymobOrderId: { type: String, default: null },
-      transactionId: { type: String, default: null },
     },
     stripeDetails: {
       sessionId: { type: String, default: null },

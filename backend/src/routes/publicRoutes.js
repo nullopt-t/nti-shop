@@ -4,7 +4,6 @@ import { getPublicItems, getPublicItemById } from '../controllers/itemController
 import {
   createPublicOrder,
   getPublicPaymentMethods,
-  handlePaymobWebhook,
   handleStripeWebhook,
   getPublicOrderStatus,
 } from '../controllers/orderController.js';
@@ -24,7 +23,6 @@ router.get('/items/:id', getPublicItemById);
 // Orders & Payment Gateways
 router.post('/orders', createPublicOrder);
 router.get('/orders/:id/status', getPublicOrderStatus);
-router.post('/paymob/webhook', handlePaymobWebhook);
 router.post('/stripe/webhook', handleStripeWebhook);
 
 export default router;

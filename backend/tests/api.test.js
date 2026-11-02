@@ -6,10 +6,7 @@ import app from '../src/app.js';
 import { Item } from '../src/models/Item.js';
 import { Order } from '../src/models/Order.js';
 
-process.env.PAYMOB_HMAC_SECRET = '';
-process.env.PAYMOB_SECRET_KEY = '';
 process.env.STRIPE_WEBHOOK_SECRET = '';
-process.env.ENABLE_PAYMOB = 'true';
 process.env.ENABLE_STRIPE = 'true';
 
 const MONGODB_URI = process.env.TEST_MONGODB_URI || 'mongodb://127.0.0.1:27017/nti_clothing_shop_test';
@@ -104,68 +101,6 @@ describe('Public Storefront Endpoints', () => {
     assert.strictEqual(res.body.data.items[0].subtotal, 79.99 * 2);
   });
 
-  test('POST /api/orders with paymentMethod=paymob initializes intention with fallback contact', async () => {
-    const payload = {
-      paymentMethod: 'paymob',
-      userDetails: {
-        name: 'Bob Online',
-        phone: '+20 100 123 4567',
-        // Address omitted to verify fallback
-      },
-      items: [
-        {
-          itemId: testItem._id.toString(),
-          quantity: 1,
-        },
-      ],
-    };
-
-    const res = await request(app).post('/api/orders').send(payload);
-    assert.strictEqual(res.status, 201);
-    assert.strictEqual(res.body.success, true);
-    assert.strictEqual(res.body.data.paymentMethod, 'paymob');
-    assert.strictEqual(res.body.data.paymentStatus, 'pending');
-    assert.ok(res.body.checkoutUrl);
-    assert.ok(res.body.checkoutUrl.includes('unifiedcheckout'));
-    assert.strictEqual(res.body.data.userDetails.name, 'Bob Online');
-    assert.strictEqual(res.body.data.userDetails.address, 'N/A');
-  });
-
-  test('POST /api/paymob/webhook updates order status to paid on successful transaction', async () => {
-    // Create an order first
-    const order = await Order.create({
-      userDetails: { name: 'Card Buyer', phone: '+20100', address: 'Cairo' },
-      items: [{ itemId: testItem._id, name: testItem.name, price: testItem.price, quantity: 1, subtotal: testItem.price }],
-      totalPrice: testItem.price,
-      paymentMethod: 'paymob',
-      paymentStatus: 'pending',
-      status: 'opened',
-    });
-
-    const webhookPayload = {
-      type: 'TRANSACTION',
-      obj: {
-        id: 998877,
-        success: true,
-        special_reference: order._id.toString(),
-        amount_cents: Math.round(testItem.price * 100),
-      },
-    };
-
-    const res = await request(app)
-      .post('/api/paymob/webhook')
-      .send(webhookPayload);
-
-    assert.strictEqual(res.status, 200);
-    assert.strictEqual(res.body.success, true);
-
-    const updated = await Order.findById(order._id);
-    assert.strictEqual(updated.paymentStatus, 'paid');
-    assert.strictEqual(updated.paymobDetails.transactionId, '998877');
-    assert.ok(Array.isArray(updated.notes));
-    assert.ok(updated.notes.some((n) => n.content.includes('998877')));
-  });
-
   test('GET /api/payment-methods returns configured payment methods', async () => {
     const res = await request(app).get('/api/payment-methods');
     assert.strictEqual(res.status, 200);
@@ -173,6 +108,7 @@ describe('Public Storefront Endpoints', () => {
     assert.ok(Array.isArray(res.body.data));
     assert.ok(res.body.data.includes('cod'));
     assert.ok(res.body.data.includes('stripe'));
+    assert.ok(!res.body.data.includes('paymob'));
   });
 
   test('POST /api/orders with paymentMethod=stripe initializes checkout session', async () => {

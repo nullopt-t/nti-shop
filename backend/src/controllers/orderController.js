@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { Order } from '../models/Order.js';
 import { Item } from '../models/Item.js';
-import { paymobService } from '../services/paymobService.js';
 import { stripeService } from '../services/stripeService.js';
 
 /**
@@ -9,16 +8,6 @@ import { stripeService } from '../services/stripeService.js';
  */
 export function getEnabledPaymentMethodsList() {
   const methods = ['cod'];
-
-  const paymobExplicit = process.env.ENABLE_PAYMOB;
-  const paymobConfigured = paymobService.isConfigured();
-  if (
-    paymobExplicit === 'true' ||
-    (paymobExplicit !== 'false' && paymobConfigured) ||
-    (process.env.NODE_ENV === 'test' && paymobExplicit !== 'false')
-  ) {
-    methods.push('paymob');
-  }
 
   const stripeExplicit = process.env.ENABLE_STRIPE;
   const stripeConfigured = stripeService.isConfigured();
@@ -145,49 +134,7 @@ export async function createPublicOrder(req, res, next) {
 
     const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:4200').replace(/\/+$/, '');
 
-    // 2. Paymob Online Payment Gateway
-    if (paymentMethod === 'paymob') {
-      const redirectionUrl = `${frontendUrl}/checkout?orderId=${newOrder._id}`;
-
-      try {
-        const intention = await paymobService.createIntention({
-          orderId: newOrder._id,
-          amount: totalPrice,
-          items: itemSnapshots,
-          customer: normalizedUserDetails,
-          redirectionUrl,
-        });
-
-        newOrder.paymobDetails = {
-          intentionId: intention.id,
-          clientSecret: intention.client_secret,
-          paymobOrderId: intention.paymob_order_id ? String(intention.paymob_order_id) : null,
-        };
-        await newOrder.save();
-
-        return res.status(201).json({
-          success: true,
-          message: 'Paymob payment intention initialized.',
-          data: newOrder,
-          checkoutUrl: intention.checkout_url,
-        });
-      } catch (err) {
-        newOrder.paymentStatus = 'failed';
-        newOrder.notes.push({
-          time: new Date(),
-          content: `Payment initialization error: ${err.message}`,
-        });
-        await newOrder.save();
-
-        return res.status(502).json({
-          success: false,
-          message: `Payment gateway error: ${err.message}`,
-          data: newOrder,
-        });
-      }
-    }
-
-    // 3. Stripe Payment Gateway
+    // 2. Stripe Payment Gateway
     if (paymentMethod === 'stripe') {
       const successUrl = `${frontendUrl}/checkout?orderId=${newOrder._id}&session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = `${frontendUrl}/checkout?orderId=${newOrder._id}&cancelled=true`;
@@ -230,85 +177,6 @@ export async function createPublicOrder(req, res, next) {
         });
       }
     }
-  } catch (error) {
-    next(error);
-  }
-}
-
-/**
- * Handle Paymob Webhook transaction processed callbacks
- */
-export async function handlePaymobWebhook(req, res, next) {
-  try {
-    const { hmac } = req.query;
-    const transactionObj = req.body?.obj;
-
-    if (!transactionObj) {
-      return res.status(400).json({ success: false, message: 'Invalid webhook payload structure' });
-    }
-
-    // Verify HMAC if HMAC secret is configured
-    if (process.env.PAYMOB_HMAC_SECRET) {
-      const isValid = paymobService.verifyWebhookHmac(hmac, transactionObj);
-      if (!isValid) {
-        return res.status(401).json({ success: false, message: 'Invalid Paymob HMAC signature' });
-      }
-    }
-
-    const merchantOrderId =
-      transactionObj.order?.merchant_order_id ||
-      transactionObj.special_reference ||
-      transactionObj.order?.extras?.merchant_order_id;
-
-    if (!merchantOrderId || !mongoose.Types.ObjectId.isValid(merchantOrderId)) {
-      return res.status(200).json({ success: true, message: 'No matching internal order ID found' });
-    }
-
-    const order = await Order.findById(merchantOrderId);
-    if (!order) {
-      return res.status(200).json({ success: true, message: 'Order not found' });
-    }
-
-    const isPending = Boolean(transactionObj.pending);
-    const isSuccess = Boolean(transactionObj.success);
-
-    if (isSuccess && !isPending) {
-      order.paymentStatus = 'paid';
-    } else if (isPending) {
-      order.paymentStatus = 'pending';
-    } else {
-      order.paymentStatus = 'failed';
-    }
-
-    order.paymobDetails = order.paymobDetails || {};
-    order.paymobDetails.transactionId = String(transactionObj.id);
-    order.notes = order.notes || [];
-
-    if (isSuccess && !isPending) {
-      order.notes.push({
-        time: new Date(),
-        content: `Paid via Paymob transaction #${transactionObj.id}`,
-      });
-    } else if (isPending) {
-      order.notes.push({
-        time: new Date(),
-        content: `Paymob payment pending #${transactionObj.id}`,
-      });
-    } else {
-      const declineReason = transactionObj.data?.message || transactionObj.txn_response_code || 'declined';
-      order.notes.push({
-        time: new Date(),
-        content: `Paymob payment failed #${transactionObj.id} (${declineReason})`,
-      });
-    }
-
-    await order.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'Order payment status updated successfully',
-      data: { orderId: order._id, paymentStatus: order.paymentStatus },
-    });
   } catch (error) {
     next(error);
   }
