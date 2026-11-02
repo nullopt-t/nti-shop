@@ -172,7 +172,7 @@ describe('Public Storefront Endpoints', () => {
     assert.ok(res.body.data.stripeDetails.sessionId);
   });
 
-  test('GET /api/orders/:id/status with session_id verifies payment directly without tunnel', async () => {
+  test('GET /api/orders/:id/status returns the order status without mutating paymentStatus', async () => {
     const order = await Order.create({
       userDetails: { name: 'Direct Verifier', phone: '+1 234', address: 'Online' },
       items: [{ itemId: testItem._id, name: testItem.name, price: testItem.price, quantity: 1, subtotal: testItem.price }],
@@ -183,13 +183,13 @@ describe('Public Storefront Endpoints', () => {
       stripeDetails: { sessionId: 'cs_test_mock_123' },
     });
 
-    const res = await request(app).get(`/api/orders/${order._id}/status?session_id=cs_test_mock_123`);
+    const res = await request(app).get(`/api/orders/${order._id}/status`);
     assert.strictEqual(res.status, 200);
     assert.strictEqual(res.body.success, true);
-    assert.strictEqual(res.body.data.paymentStatus, 'paid');
+    assert.strictEqual(res.body.data.paymentStatus, 'pending');
 
     const updated = await Order.findById(order._id);
-    assert.strictEqual(updated.paymentStatus, 'paid');
+    assert.strictEqual(updated.paymentStatus, 'pending');
   });
 
   test('POST /api/stripe/webhook updates order status to paid on checkout.session.completed', async () => {

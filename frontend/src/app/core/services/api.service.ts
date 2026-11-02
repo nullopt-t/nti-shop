@@ -61,12 +61,8 @@ export class ApiService {
     return this.http.post<CreateOrderResponse>(`${this.baseUrl}/orders`, payload);
   }
 
-  getOrderStatus(orderId: string, sessionId?: string): Observable<ApiResponse<Order>> {
-    let params = new HttpParams();
-    if (sessionId) {
-      params = params.set('session_id', sessionId);
-    }
-    return this.http.get<ApiResponse<Order>>(`${this.baseUrl}/orders/${orderId}/status`, { params });
+  getOrderStatus(orderId: string): Observable<ApiResponse<Order>> {
+    return this.http.get<ApiResponse<Order>>(`${this.baseUrl}/orders/${orderId}/status`);
   }
 
   // --- MANAGER ENDPOINTS ---

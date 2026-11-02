@@ -159,7 +159,7 @@ export async function createPublicOrder(req, res, next) {
 
     // 2. Stripe Payment Gateway
     if (paymentMethod === 'stripe') {
-      const successUrl = `${frontendUrl}/checkout?orderId=${newOrder._id}&session_id={CHECKOUT_SESSION_ID}`;
+      const successUrl = `${frontendUrl}/checkout?orderId=${newOrder._id}`;
       const cancelUrl = `${frontendUrl}/checkout?orderId=${newOrder._id}&cancelled=true`;
 
       try {
@@ -255,12 +255,11 @@ export async function handleStripeWebhook(req, res, next) {
 
 /**
  * Public Order Payment Status Inquiry
- * Supports direct session retrieval to verify Stripe checkout without needing a webhook tunnel.
+ * Checks order status recorded in the database (updated via Stripe webhooks or COD).
  */
 export async function getPublicOrderStatus(req, res, next) {
   try {
     const { id } = req.params;
-    const { session_id } = req.query;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid order ID' });
@@ -269,33 +268,6 @@ export async function getPublicOrderStatus(req, res, next) {
     const order = await Order.findById(id);
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' });
-    }
-
-    // Direct Stripe Session Verification (No tunnel required)
-    if (order.paymentMethod === 'stripe' && order.paymentStatus !== 'paid' && session_id) {
-      try {
-        const session = await stripeService.retrieveCheckoutSession(session_id);
-        if (session.payment_status === 'paid' || session.status === 'complete') {
-          order.paymentStatus = 'paid';
-          order.stripeDetails = order.stripeDetails || {};
-          order.stripeDetails.sessionId = session.id;
-          if (session.payment_intent) {
-            order.stripeDetails.paymentIntentId = String(session.payment_intent);
-          }
-          if (session.customer_details?.email) {
-            order.stripeDetails.customerEmail = session.customer_details.email;
-          }
-          order.notes = order.notes || [];
-          order.notes.push({
-            time: new Date(),
-            content: `Paid via verified Stripe session #${session.id}`,
-          });
-          await order.save();
-          console.log(`[Stripe Direct Verification] Order #${order._id} verified as PAID via Stripe session #${session.id}`);
-        }
-      } catch (err) {
-        console.warn(`[Stripe Direct Verification] Failed: ${err.message}`);
-      }
     }
 
     return res.status(200).json({

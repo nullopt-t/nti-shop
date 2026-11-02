@@ -67,8 +67,6 @@ export class CheckoutComponent implements OnInit {
 
     if (orderId) {
       this.verifyingPayment.set(true);
-      const isSuccessParam = params['success'] === 'true' || Boolean(sessionId);
-      const isPendingParam = params['pending'] === 'true';
       const isFailedParam = params['success'] === 'false';
 
       if (isFailedParam) {
@@ -77,39 +75,43 @@ export class CheckoutComponent implements OnInit {
         return;
       }
 
-      // Verify status directly from server database (with direct Stripe session retrieval if session_id is provided)
-      this.api.getOrderStatus(orderId, sessionId).subscribe({
-        next: (res) => {
-          this.verifyingPayment.set(false);
-          this.cartService.clearCart();
-          const ord = res.data;
+      // Poll or check order status verified by Stripe Webhook in DB
+      let attempts = 0;
+      const maxAttempts = 10;
 
-          if (ord.paymentStatus === 'paid' || isSuccessParam) {
-            this.paymentReturnNotice.set(
-              this.langService.t().paymentConfirmedMsg(ord._id, ord.totalPrice.toFixed(2))
-            );
-          } else if (ord.paymentStatus === 'pending' || isPendingParam) {
-            this.paymentReturnNotice.set(
-              this.langService.t().paymentPendingMsg(ord._id)
-            );
-          } else {
-            this.errorMessage.set(
-              this.langService.t().paymentDeclinedMsg
-            );
-          }
-        },
-        error: () => {
-          this.verifyingPayment.set(false);
-          if (isSuccessParam) {
-            this.cartService.clearCart();
-            this.paymentReturnNotice.set(
-              this.langService.t().paymentConfirmedMsg(orderId, '0.00')
-            );
-          } else {
+      const checkStatus = () => {
+        this.api.getOrderStatus(orderId).subscribe({
+          next: (res) => {
+            const ord = res.data;
+            if (ord.paymentStatus === 'paid') {
+              this.verifyingPayment.set(false);
+              this.cartService.clearCart();
+              this.paymentReturnNotice.set(
+                this.langService.t().paymentConfirmedMsg(ord._id, ord.totalPrice.toFixed(2))
+              );
+            } else if (attempts < maxAttempts) {
+              attempts++;
+              setTimeout(checkStatus, 1500);
+            } else {
+              this.verifyingPayment.set(false);
+              this.cartService.clearCart();
+              if (ord.paymentStatus === 'pending') {
+                this.paymentReturnNotice.set(
+                  this.langService.t().paymentPendingMsg(ord._id)
+                );
+              } else {
+                this.errorMessage.set(this.langService.t().paymentDeclinedMsg);
+              }
+            }
+          },
+          error: () => {
+            this.verifyingPayment.set(false);
             this.errorMessage.set(this.langService.t().paymentDeclinedMsg);
-          }
-        },
-      });
+          },
+        });
+      };
+
+      checkStatus();
     }
   }
 
