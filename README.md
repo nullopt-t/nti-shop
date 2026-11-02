@@ -47,8 +47,7 @@ nti-project/
 - **Local Storage State**: Cart and Favorites persist directly to `localStorage` using Angular Signals.
 - **Dual Payment Checkout**:
   - **Cash on Delivery (COD)**: Orders are submitted with customer contact details (`name`, `phone`, `address`) into an `opened` state. Final purchases and deliveries are verified via phone calls.
-  - **Paymob Payment Gateway**: Uses Paymob's latest **Payment Intentions API (`v1/intention`)** for seamless online card and wallet payments via Unified Checkout. Contact information is retained as a fallback for customer service inquiry without requiring tedious address fields.
-  - **Webhook & HMAC-SHA512 Verification**: Automatically verifies server-to-server transaction callbacks (`POST /api/paymob/webhook`) using standard HMAC-SHA512 checksum across the 20 canonical transaction attributes.
+  - **Stripe Payment Gateway**: Seamless online card checkout using Stripe Checkout Sessions. Contact information and email are stored for receipts and customer inquiries. Includes direct verification and webhook processing.
 
 ### 2. Manager Dashboard
 - **Passcode Key Gate**: Access protected by `POST /api/manager/auth` (Default Sprint 01 key: `manager123`).

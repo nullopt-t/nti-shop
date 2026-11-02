@@ -29,7 +29,7 @@
    - When Stripe redirects the customer back to the frontend checkout page (`/checkout?orderId=...&session_id=...`), the frontend calls `/api/orders/:id/status?session_id=...`.
    - The backend retrieves the session directly from Stripe's API and marks the order as `paid` immediately, eliminating any requirement for local webhook tunnels (e.g. ngrok).
    - Asynchronous webhook receiver (`POST /api/stripe/webhook`) remains active with HMAC signature verification for production.
-3. Added optional gateway toggles in `backend/.env` and `backend/.env.example` (`ENABLE_STRIPE`, `ENABLE_PAYMOB`).
+3. Added gateway toggle in `backend/.env` and `backend/.env.example` (`ENABLE_STRIPE`).
 4. Exposed `GET /api/payment-methods` to dynamically serve enabled payment methods to the frontend.
 5. Updated `Order` Mongoose schema and TypeScript model with `stripe` payment method and `stripeDetails`.
 6. Updated frontend `CheckoutComponent`:

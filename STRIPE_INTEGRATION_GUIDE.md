@@ -102,7 +102,7 @@ The Mongoose `Order` schema was extended with dedicated tracking fields:
 ```javascript
 paymentMethod: {
   type: String,
-  enum: ['cod', 'paymob', 'stripe'],
+  enum: ['cod', 'stripe'],
   default: 'cod',
 },
 stripeDetails: {
@@ -118,7 +118,7 @@ stripeDetails: {
 
 #### A. Dynamic Gateway Discovery (`frontend/src/app/public/checkout/checkout.component.ts`)
 - The checkout component requests `GET /api/payment-methods` on initialization.
-- Available options (`cod`, `paymob`, `stripe`) are dynamically rendered to the user.
+- Available options (`cod`, `stripe`) are dynamically rendered to the user.
 - If Stripe is enabled, the payment selector displays a clean SVG card indicator.
 
 #### B. Redirection and User Experience
