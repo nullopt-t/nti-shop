@@ -14,6 +14,13 @@ const sampleItems = [
     description: 'Custom 480 GSM combed cotton fleece. Drop shoulder tailoring, double-lined seamless hood, and dense ribbed hems.',
     price: 120.00,
     image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
+    translations: {
+      ar: {
+        category: 'هوديز',
+        name: 'هودي روك ثقيل من الصوف — أسود داكن',
+        description: 'صوف قطني ممشط فاخر 480 جم. تصميم أكتاف منسدلة، غطاء رأس مزدوج بدون درزات، وحواف مضلعة كثيفة.',
+      },
+    },
   },
   {
     _id: new mongoose.Types.ObjectId('660000000000000000000002'),
@@ -22,6 +29,13 @@ const sampleItems = [
     description: 'Sun-faded garment wash with brushed interior fleece. Relaxed drape with kangaroo pouch.',
     price: 115.00,
     image: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=800&q=80',
+    translations: {
+      ar: {
+        category: 'هوديز',
+        name: 'هودي روك مغسول بطراز فينتاج — رمادي أردوازي',
+        description: 'غسيل عتيق مميز مع بطانة صوفية ناعمة. قَصّة مريحة مع جيب أمامي كانغرو.',
+      },
+    },
   },
   {
     _id: new mongoose.Types.ObjectId('660000000000000000000003'),
@@ -30,6 +44,13 @@ const sampleItems = [
     description: '300 GSM luxury organic ring-spun cotton. High-density crewneck collar with wide silhouette.',
     price: 55.00,
     image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
+    translations: {
+      ar: {
+        category: 'تي شيرتات',
+        name: 'تي شيرت روك واسع ومربع — أبيض ناصع',
+        description: 'قطن عضوي فاخر 300 جم. ياقة دائرية عالية الكثافة مع قَصّة عريضة وعصرية.',
+      },
+    },
   },
   {
     _id: new mongoose.Types.ObjectId('660000000000000000000004'),
@@ -38,6 +59,13 @@ const sampleItems = [
     description: 'Tonal matte screenprint across heavyweight jersey cotton. Pre-shrunk for durable drape.',
     price: 60.00,
     image: '',
+    translations: {
+      ar: {
+        category: 'تي شيرتات',
+        name: 'تي شيرت روك برسم بسيط — فحمى',
+        description: 'طباعة حريرية مطفية متناسقة على قطن جيرسي ثقيل. معالج ضد الانكماش لشكل متين ودائم.',
+      },
+    },
   },
   {
     _id: new mongoose.Types.ObjectId('660000000000000000000005'),
@@ -46,6 +74,13 @@ const sampleItems = [
     description: 'Rigid shuttle-loomed Japanese denim with red selvedge ID line. Clean straight-leg silhouette with custom matte black hardware.',
     price: 185.00,
     image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80',
+    translations: {
+      ar: {
+        category: 'جينز',
+        name: 'بنطال روك جينز ياباني سيلفدج 14 أونصة — نيلي خام',
+        description: 'دنيم ياباني منسوج على أنوال تقليدية بشريط أحمر مميز. قَصّة مستقيمة أنيقة وإكسسوارات سوداء مطفية مخصصة.',
+      },
+    },
   },
   {
     _id: new mongoose.Types.ObjectId('660000000000000000000006'),
@@ -54,6 +89,13 @@ const sampleItems = [
     description: 'Water-repellent technical ripstop with concealed snap closures, dual chest utility bellows, and ventilated back yoke.',
     price: 195.00,
     image: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80',
+    translations: {
+      ar: {
+        category: 'ملابس خارجية',
+        name: 'قميص خارجي تكتيكي غير لامع — أسود داكن',
+        description: 'قماش ريب ستوب تقني طارد للماء مع أزرار كبس مخفية، جيوب صدر عملية مزدوجة، وفتحة تهوية خلفية.',
+      },
+    },
   },
   {
     _id: new mongoose.Types.ObjectId('660000000000000000000007'),
@@ -62,6 +104,13 @@ const sampleItems = [
     description: '100% fine merino wool spun into tight thermal ribbing. Foldover brim with subtle tonal branding.',
     price: 45.00,
     image: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&w=800&q=80',
+    translations: {
+      ar: {
+        category: 'إكسسوارات',
+        name: 'قبعة صوف مضلعة ثقيلة — أوبسيديان',
+        description: '100% صوف ميرينو ناعم محبوك بنمط مضلع حراري محكم. حافة مطوية مع شعار خافت وأنيق.',
+      },
+    },
   },
 ];
 

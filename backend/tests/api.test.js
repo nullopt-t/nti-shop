@@ -24,6 +24,13 @@ before(async () => {
     description: 'High-density sherpa fleece jacket',
     price: 79.99,
     image: 'https://images.unsplash.com/photo-1544441893-675973e31985',
+    translations: {
+      ar: {
+        category: 'ملابس خارجية',
+        name: 'سترة شيربا صوف للتجربة',
+        description: 'سترة صوفية عالية الكثافة للتجربة',
+      },
+    },
   });
 });
 
@@ -74,6 +81,34 @@ describe('Public Storefront Endpoints', () => {
     assert.strictEqual(res.body.success, true);
     assert.strictEqual(res.body.data.name, 'Test Sherpa Fleece');
     assert.strictEqual(res.body.data.quantity, undefined);
+  });
+
+  test('GET /api/items?lang=ar returns Arabic localized item name and category', async () => {
+    const res = await request(app).get('/api/items?lang=ar');
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.success, true);
+    assert.ok(res.body.data.length >= 1);
+    const item = res.body.data.find((i) => i._id.toString() === testItem._id.toString());
+    assert.ok(item);
+    assert.strictEqual(item.name, 'سترة شيربا صوف للتجربة');
+    assert.strictEqual(item.category, 'ملابس خارجية');
+    assert.strictEqual(item.description, 'سترة صوفية عالية الكثافة للتجربة');
+  });
+
+  test('GET /api/items/:id with X-Language: ar header returns localized item', async () => {
+    const res = await request(app).get(`/api/items/${testItem._id}`).set('X-Language', 'ar');
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.success, true);
+    assert.strictEqual(res.body.data.name, 'سترة شيربا صوف للتجربة');
+    assert.strictEqual(res.body.data.category, 'ملابس خارجية');
+  });
+
+  test('GET /api/categories?lang=ar returns localized category names', async () => {
+    const res = await request(app).get('/api/categories?lang=ar');
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.success, true);
+    assert.ok(Array.isArray(res.body.data));
+    assert.ok(res.body.data.includes('ملابس خارجية'));
   });
 
   test('POST /api/orders creates order with opened status and valid totals', async () => {

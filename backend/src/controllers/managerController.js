@@ -52,7 +52,7 @@ export async function getManagerItems(req, res, next) {
 
 export async function createManagerItem(req, res, next) {
   try {
-    const { category, name, description, price, image } = req.body;
+    const { category, name, description, price, image, translations } = req.body;
 
     if (!category || !name || !description || price === undefined) {
       return res.status(400).json({
@@ -67,6 +67,7 @@ export async function createManagerItem(req, res, next) {
       description: description.trim(),
       price: Number(price),
       image: image ? image.trim() : '',
+      translations: translations || {},
     });
 
     res.status(201).json({ success: true, data: newItem });
@@ -87,13 +88,16 @@ export async function updateManagerItem(req, res, next) {
       return res.status(404).json({ success: false, message: 'Item not found' });
     }
 
-    const { category, name, description, price, image } = req.body;
+    const { category, name, description, price, image, translations } = req.body;
 
     if (category) item.category = category.trim();
     if (name) item.name = name.trim();
     if (description) item.description = description.trim();
     if (price !== undefined) item.price = Number(price);
     if (image !== undefined) item.image = image ? image.trim() : '';
+    if (translations !== undefined) {
+      item.translations = translations;
+    }
 
     await item.save();
     res.status(200).json({ success: true, data: item });
